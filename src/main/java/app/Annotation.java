@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * This class is annotation for routes.
  */
-@RestController
+// @RestController
 public class Annotation {
 
   public Annotation(int annoID, int routeID, int userID, List<Map<String, Object> > StopList){
@@ -32,8 +32,8 @@ public class Annotation {
     return this.StopList;
   }
   
-    private int annoID;
-    private int routeID;
-    private int userID;
-    private List<Map<String, Object>> StopList; 
+  private int annoID;
+  private int routeID;
+  private int userID;
+  private List<Map<String, Object>> StopList; 
 }
