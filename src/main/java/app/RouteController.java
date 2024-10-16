@@ -7,6 +7,11 @@ import java.util.Map;
 
 import com.mongodb.client.MongoClients;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
@@ -28,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.bson.Document;
-import org.hibernate.engine.internal.Collections;
 
 @RestController
 public class RouteController {
@@ -38,15 +42,17 @@ public class RouteController {
   private static final String FIELD_MASK = "routes.legs.steps.transitDetails";
   
   @GetMapping("/")
-  public String sayHello() {
-    String origin = "28-30 Jackson Ave,Long Island City,NY 11101";
-    String destination = "20 W 34th St., New York, NY 10001";//"116th and Broadway, New York, NY 10027";
+  public String sayHello() throws FileNotFoundException {
+    String origin = "5-70-5-98 48th Ave, Long Island City, NY 11101";//"28-30 Jackson Ave,Long Island City,NY 11101";
+    String destination = "44 W 34th St., New York, NY 10001";//"116th and Broadway, New York, NY 10027";
     RouteRequestGoogle routeRequest = new RouteRequestGoogle(origin, destination);
     Map<String, Object> entity = routeRequest.getRequestEntity();
     // computeRoutes(entity);
     // ResponseEntity<String> r = computeRoutes(entity);
-    ResponseEntity<?> response=retrieveRoute(origin, destination);
-    System.out.println("The response:"+ response.getBody());
+    ResponseEntity<?> response = retrieveRoute(origin, destination);
+    System.out.println("The response:" + response.getBody());
+
+
     // System.out.println(r.getBody());
     // retrieveRoute(origin,destination);
     // String"Retrieve response:"+ .getBody()
@@ -56,6 +62,16 @@ public class RouteController {
 
     // for (String fruit : fruits) {
     //   System.out.println(fruit);
+    // }
+    // System.out.println("before read");
+    // FileReader reader = new FileReader("src/main/resources/googleResponse.json");
+    // JsonObject jsonRead = JsonParser.parseReader(reader).getAsJsonObject();
+    // ResponseEntity<String> googleResponse = computeRoutes(entity);
+    // ReadJSON jsonResponse = new ReadJSON(googleResponse.getBody());
+    // ReadJSON jsonResponse = new ReadJSON(jsonRead.toString());
+    // String[] stopList = jsonResponse.getContent();
+    // for (String s : stopList) {
+    //   System.out.println(s);
     // }
     return "Hello, World!";
   }
@@ -109,10 +125,13 @@ public class RouteController {
       else {
         RouteRequestGoogle routeRequest = new RouteRequestGoogle(origin, destination);
         Map<String, Object> entity = routeRequest.getRequestEntity();
-        computeRoutes(entity);
-        ResponseEntity<String> googleResponse = computeRoutes(entity);
-
-        ReadJSON jsonResponse = new ReadJSON(googleResponse.getBody());
+        
+        // just for test phase
+        FileReader reader = new FileReader("src/main/resources/googleResponse.json");
+        JsonObject jsonRead = JsonParser.parseReader(reader).getAsJsonObject();
+        // ResponseEntity<String> googleResponse = computeRoutes(entity);
+        // ReadJSON jsonResponse = new ReadJSON(googleResponse.getBody());
+        ReadJSON jsonResponse = new ReadJSON(jsonRead.toString());
         String[] stopList = jsonResponse.getContent();
         // JsonObject rawJsonToy = new JsonObject();
         String rawJsonToy = "";

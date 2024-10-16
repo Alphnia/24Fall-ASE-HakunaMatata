@@ -24,24 +24,29 @@ import org.springframework.http.ResponseEntity;
 
 public class DatabaseOperation{
   public DatabaseOperation(String origin, String destination){
-    String connectionString = "mongodb+srv://team_public:Hakunamatata@cluster4156.287dv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster4156";
+    String connectionString = "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster4156";
     MongoClient mongoClient = MongoClients.create(connectionString);
     this.database = mongoClient.getDatabase("Hkunamatata_DB");
     this.collection = database.getCollection("Route");
+    System.out.println("connect to server");
   }
 
   public String FindDocumentbyOriDes(String origin, String destination){
     try{
       List<String> OriDes = Arrays.asList(origin, destination);
-      System.out.println("before");
       Document document = new Document("OriDes", OriDes);
       FindIterable<Document> results = this.collection.find(document).limit(1);
-      if (document != null) {
-          System.out.println("Record found: " + document.toJson());
+      System.out.println(results);
+      MongoCursor<Document> cursor = results.iterator();
+      if (cursor.hasNext()) {
+        Document doc = cursor.next();
+        System.out.println("Record found: " + doc.toJson());
+        return doc.toJson();
       } else {
           System.out.println("No record found.");
+          return null;
       }
-      return document.toJson();
+      //return null;
     }catch (Exception e) {
       System.out.println("Error: " + e.getMessage());
       return "An Error has occurred";
