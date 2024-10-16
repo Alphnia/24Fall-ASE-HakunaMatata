@@ -2,6 +2,7 @@ package app;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
 
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoClient;
@@ -9,6 +10,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.FindIterable;
 
 import org.bson.Document;
 
@@ -30,11 +32,10 @@ public class DatabaseOperation{
 
   public String FindDocumentbyOriDes(String origin, String destination){
     try{
-      String[] OriDes = new String[2];
-      OriDes[0] = origin;
-      OriDes[1] = destination;
+      List<String> OriDes = Arrays.asList(origin, destination);
       System.out.println("before");
-      Document document = this.collection.find(eq("RouteID", 0)).first();
+      Document document = new Document("OriDes", OriDes);
+      FindIterable<Document> results = this.collection.find(document).limit(1);
       if (document != null) {
           System.out.println("Record found: " + document.toJson());
       } else {
@@ -42,6 +43,7 @@ public class DatabaseOperation{
       }
       return document.toJson();
     }catch (Exception e) {
+      System.out.println("Error: " + e.getMessage());
       return "An Error has occurred";
     }
     

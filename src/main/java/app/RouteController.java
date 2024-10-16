@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.mongodb.client.MongoClients;
+import com.google.gson.JsonObject;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
@@ -39,18 +40,23 @@ public class RouteController {
   @GetMapping("/")
   public String sayHello() {
     String origin = "28-30 Jackson Ave,Long Island City,NY 11101";
-    String destination = "116th and Broadway, New York, NY 10027";
+    String destination = "20 W 34th St., New York, NY 10001";//"116th and Broadway, New York, NY 10027";
     RouteRequestGoogle routeRequest = new RouteRequestGoogle(origin, destination);
     Map<String, Object> entity = routeRequest.getRequestEntity();
-    computeRoutes(entity);
-    ResponseEntity<String> r = computeRoutes(entity);
+    // computeRoutes(entity);
+    // ResponseEntity<String> r = computeRoutes(entity);
+    ResponseEntity<?> response=retrieveRoute(origin, destination);
+    System.out.println("The response:"+ response.getBody());
     // System.out.println(r.getBody());
-    retrieveRoute(origin,destination);
+    // retrieveRoute(origin,destination);
     // String"Retrieve response:"+ .getBody()
     // System.out.println("Hello, World!");
-    ReadJSON j = new ReadJSON(r.getBody());
-    
-    System.out.println(j.getContent());
+    // ReadJSON j = new ReadJSON(r.getBody());
+    // String [] fruits = j.getContent();
+
+    // for (String fruit : fruits) {
+    //   System.out.println(fruit);
+    // }
     return "Hello, World!";
   }
 
@@ -104,9 +110,13 @@ public class RouteController {
         RouteRequestGoogle routeRequest = new RouteRequestGoogle(origin, destination);
         Map<String, Object> entity = routeRequest.getRequestEntity();
         computeRoutes(entity);
-        // String origin = "28-30 Jackson Ave,Long Island City,NY 11101";
-        // String destination = "116th and Broadway, New York, NY 10027";
-        ResponseEntity<String> r = computeRoutes(entity);
+        ResponseEntity<String> googleResponse = computeRoutes(entity);
+
+        ReadJSON jsonResponse = new ReadJSON(googleResponse.getBody());
+        String[] stopList = jsonResponse.getContent();
+        // JsonObject rawJsonToy = new JsonObject();
+        String rawJsonToy = "";
+        createRoute(rawJsonToy, origin, destination, stopList, stopList);
         return new ResponseEntity<>("", HttpStatus.OK);
       }
     } catch (Exception e) {
@@ -168,8 +178,8 @@ public class RouteController {
     @RequestParam("rawjson") String rawjson,
     @RequestParam("origin") String origin,
     @RequestParam("destination") String destination,
-    @RequestParam("stoplist") List<Map<String, Object>> stoplist,
-    @RequestParam("annotatedlist") List<Map<String, Object>> annotatedlist) {
+    @RequestParam("stoplist") String[] stoplist,
+    @RequestParam("annotatedlist") String[] annotatedlist) {
     String connectionString = "mongodb+srv://team_public:Hakunamatata@cluster4156.287dv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster4156";
     try (MongoClient mongoClient = MongoClients.create(connectionString)) {
       MongoDatabase database = mongoClient.getDatabase("Hkunamatata_DB"); 
