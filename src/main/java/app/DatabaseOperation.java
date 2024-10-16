@@ -55,6 +55,29 @@ public class DatabaseOperation{
 
   }
 
+  public ResponseEntity<?> CreateDocument(String rawjson,String origin,
+  String destination, String[] stoplist, String[] annotatedlist){
+    try{
+      List<String> OriDes = Arrays.asList(origin, destination);
+      List<String> stoplistArray = Arrays.asList(stoplist);
+      List<String> annotatedlistArray = Arrays.asList(annotatedlist);
+      long count = this.collection.countDocuments();
+      Document newDocument = new Document("RouteID", count)
+                    .append("rawjson", rawjson)
+                    .append("OriDes", OriDes)
+                    .append("Stoplist", stoplistArray)
+                    .append("Annotatedlist", annotatedlistArray);
+      collection.insertOne(newDocument);
+      System.out.println("Insert successfully!!!");
+      return new ResponseEntity<>("Success",HttpStatus.OK);
+    }catch (Exception e) {
+      System.out.println("Error: " + e.getMessage());
+      return new ResponseEntity<>("Error in creating doc", HttpStatus.OK);
+    }
+    
+
+  }
+
   private ResponseEntity<?> handleException(Exception e) {
     System.out.println(e.toString());
     return new ResponseEntity<>("An Error has occurred", HttpStatus.OK);

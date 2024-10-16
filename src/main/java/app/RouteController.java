@@ -43,8 +43,8 @@ public class RouteController {
   
   @GetMapping("/")
   public String sayHello() throws FileNotFoundException {
-    String origin = "5-70-5-98 48th Ave, Long Island City, NY 11101";//"28-30 Jackson Ave,Long Island City,NY 11101";
-    String destination = "44 W 34th St., New York, NY 10001";//"116th and Broadway, New York, NY 10027";
+    String origin = "E 73rd St, New York, NY 10021";//"28-30 Jackson Ave,Long Island City,NY 11101";
+    String destination = "162-124 E Broadway, New York, NY 10002";//"116th and Broadway, New York, NY 10027";
     RouteRequestGoogle routeRequest = new RouteRequestGoogle(origin, destination);
     Map<String, Object> entity = routeRequest.getRequestEntity();
     // computeRoutes(entity);
@@ -135,8 +135,9 @@ public class RouteController {
         String[] stopList = jsonResponse.getContent();
         // JsonObject rawJsonToy = new JsonObject();
         String rawJsonToy = "";
+        System.out.println("create a new document!");
         createRoute(rawJsonToy, origin, destination, stopList, stopList);
-        return new ResponseEntity<>("", HttpStatus.OK);
+        return new ResponseEntity<>("Successfully Created!", HttpStatus.OK);
       }
     } catch (Exception e) {
       return handleException(e);
@@ -199,27 +200,18 @@ public class RouteController {
     @RequestParam("destination") String destination,
     @RequestParam("stoplist") String[] stoplist,
     @RequestParam("annotatedlist") String[] annotatedlist) {
-    String connectionString = "mongodb+srv://team_public:Hakunamatata@cluster4156.287dv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster4156";
-    try (MongoClient mongoClient = MongoClients.create(connectionString)) {
-      MongoDatabase database = mongoClient.getDatabase("Hkunamatata_DB"); 
-      MongoCollection<Document> collection = database.getCollection("Route");
-      String[] OriDes = new String[2];
-      OriDes[0]=origin;
-      OriDes[1]=destination;
-      long count = collection.countDocuments();
-      Document newDocument = new Document("RouteID", count-1)
-                    .append("rawjson", rawjson)
-                    .append("OriDes", OriDes)
-                    .append("Stoplist", stoplist)
-                    .append("Annotatedlist", annotatedlist);
-      collection.insertOne(newDocument);
-      try {
-        collection.insertOne(newDocument);
-        return new ResponseEntity<>(HttpStatus.OK);
-
-      }catch (Exception e) {
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    try {
+      DatabaseOperation DB = new DatabaseOperation(origin, destination);
+      boolean response;
+      response = DB.CreateDocument(rawjson, origin, destination,
+      stoplist, annotatedlist).getStatusCode() == HttpStatus.OK;
+      if (response){
+        return new ResponseEntity<>("New Route Created.", HttpStatus.OK);
       }
+      else{
+        return new ResponseEntity<>("Insertion Failed", HttpStatus.NOT_FOUND);
+      }
+      
     } catch (Exception e) {
       return handleException(e);
     }
