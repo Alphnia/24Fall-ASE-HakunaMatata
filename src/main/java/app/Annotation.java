@@ -3,14 +3,16 @@ package app;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
 
 /**
  * This class is annotation for routes.
  */
-@RestController
+@Component
 public class Annotation {
-
+  public Annotation(){
+    
+  }
   public Annotation(int annoID, int routeID, int userID, List<Map<String, Object> > StopList){
     this.annoID = annoID;
     this.routeID = routeID;
@@ -32,8 +34,8 @@ public class Annotation {
     return this.StopList;
   }
   
-    private int annoID;
-    private int routeID;
-    private int userID;
-    private List<Map<String, Object>> StopList; 
+  private int annoID;
+  private int routeID;
+  private int userID;
+  private List<Map<String, Object>> StopList; 
 }
