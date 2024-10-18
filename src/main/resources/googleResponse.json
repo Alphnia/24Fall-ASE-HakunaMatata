@@ -1,0 +1,818 @@
+{
+  "routes": [
+    {
+      "legs": [
+        {
+          "steps": [
+            {},
+            {},
+            {},
+            {
+              "transitDetails": {
+                "stopDetails": {
+                  "arrivalStop": {
+                    "name": "Times Sq–42 St",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.755478,
+                        "longitude": -73.987693999999991
+                      }
+                    }
+                  },
+                  "arrivalTime": "2024-10-16T01:31:54Z",
+                  "departureStop": {
+                    "name": "Vernon Blvd-Jackson Av",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.742626,
+                        "longitude": -73.953583
+                      }
+                    }
+                  },
+                  "departureTime": "2024-10-16T01:24:24Z"
+                },
+                "localizedValues": {
+                  "arrivalTime": {
+                    "time": {
+                      "text": "9:31 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  },
+                  "departureTime": {
+                    "time": {
+                      "text": "9:24 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  }
+                },
+                "headsign": "34 St-Hudson Yards",
+                "headway": "240s",
+                "transitLine": {
+                  "agencies": [
+                    {
+                      "name": "MTA New York City Transit",
+                      "phoneNumber": "+1 718-330-1234",
+                      "uri": "http://www.mta.info/"
+                    }
+                  ],
+                  "name": "7 Train (Flushing Local and Express)",
+                  "uri": "https://new.mta.info/document/9461",
+                  "color": "#b933ad",
+                  "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/us-ny-mta/7.png",
+                  "nameShort": "7",
+                  "textColor": "#ffffff",
+                  "vehicle": {
+                    "name": {
+                      "text": "Subway"
+                    },
+                    "type": "SUBWAY",
+                    "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/subway2.png"
+                  }
+                },
+                "stopCount": 4
+              }
+            },
+            {},
+            {
+              "transitDetails": {
+                "stopDetails": {
+                  "arrivalStop": {
+                    "name": "34 St-Herald Sq",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.749565,
+                        "longitude": -73.98795299999999
+                      }
+                    }
+                  },
+                  "arrivalTime": "2024-10-16T01:40:00Z",
+                  "departureStop": {
+                    "name": "Times Sq - 42 St",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.754673,
+                        "longitude": -73.986755
+                      }
+                    }
+                  },
+                  "departureTime": "2024-10-16T01:38:00Z"
+                },
+                "localizedValues": {
+                  "arrivalTime": {
+                    "time": {
+                      "text": "9:40 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  },
+                  "departureTime": {
+                    "time": {
+                      "text": "9:38 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  }
+                },
+                "headsign": "Coney Island-Stillwell Av",
+                "headway": "600s",
+                "transitLine": {
+                  "agencies": [
+                    {
+                      "name": "MTA New York City Transit",
+                      "phoneNumber": "+1 718-330-1234",
+                      "uri": "http://www.mta.info/"
+                    }
+                  ],
+                  "name": "Q Train (2 Av/Broadway Express)",
+                  "uri": "https://new.mta.info/document/9516",
+                  "color": "#f2c40a",
+                  "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/us-ny-mta/Q.png",
+                  "nameShort": "Q Line",
+                  "textColor": "#000000",
+                  "vehicle": {
+                    "name": {
+                      "text": "Subway"
+                    },
+                    "type": "SUBWAY",
+                    "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/subway2.png"
+                  }
+                },
+                "stopCount": 2
+              }
+            },
+            {},
+            {},
+            {},
+            {}
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "steps": [
+            {},
+            {},
+            {},
+            {
+              "transitDetails": {
+                "stopDetails": {
+                  "arrivalStop": {
+                    "name": "5 Av",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.753822,
+                        "longitude": -73.981963999999991
+                      }
+                    }
+                  },
+                  "arrivalTime": "2024-10-16T01:30:24Z",
+                  "departureStop": {
+                    "name": "Vernon Blvd-Jackson Av",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.742626,
+                        "longitude": -73.953583
+                      }
+                    }
+                  },
+                  "departureTime": "2024-10-16T01:24:24Z"
+                },
+                "localizedValues": {
+                  "arrivalTime": {
+                    "time": {
+                      "text": "9:30 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  },
+                  "departureTime": {
+                    "time": {
+                      "text": "9:24 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  }
+                },
+                "headsign": "34 St-Hudson Yards",
+                "headway": "240s",
+                "transitLine": {
+                  "agencies": [
+                    {
+                      "name": "MTA New York City Transit",
+                      "phoneNumber": "+1 718-330-1234",
+                      "uri": "http://www.mta.info/"
+                    }
+                  ],
+                  "name": "7 Train (Flushing Local and Express)",
+                  "uri": "https://new.mta.info/document/9461",
+                  "color": "#b933ad",
+                  "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/us-ny-mta/7.png",
+                  "nameShort": "7",
+                  "textColor": "#ffffff",
+                  "vehicle": {
+                    "name": {
+                      "text": "Subway"
+                    },
+                    "type": "SUBWAY",
+                    "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/subway2.png"
+                  }
+                },
+                "stopCount": 3
+              }
+            },
+            {},
+            {
+              "transitDetails": {
+                "stopDetails": {
+                  "arrivalStop": {
+                    "name": "34 St-Herald Sq",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.749718,
+                        "longitude": -73.987822999999992
+                      }
+                    }
+                  },
+                  "arrivalTime": "2024-10-16T01:41:04Z",
+                  "departureStop": {
+                    "name": "42 St-Bryant Pk",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.754222999999996,
+                        "longitude": -73.984566
+                      }
+                    }
+                  },
+                  "departureTime": "2024-10-16T01:39:34Z"
+                },
+                "localizedValues": {
+                  "arrivalTime": {
+                    "time": {
+                      "text": "9:41 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  },
+                  "departureTime": {
+                    "time": {
+                      "text": "9:39 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  }
+                },
+                "headsign": "Coney Island-Stillwell Av",
+                "headway": "180s",
+                "transitLine": {
+                  "agencies": [
+                    {
+                      "name": "MTA New York City Transit",
+                      "phoneNumber": "+1 718-330-1234",
+                      "uri": "http://www.mta.info/"
+                    }
+                  ],
+                  "name": "D Train (6 Av Express)",
+                  "uri": "https://new.mta.info/document/9486",
+                  "color": "#f25e18",
+                  "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/us-ny-mta/D.png",
+                  "nameShort": "D Line",
+                  "textColor": "#ffffff",
+                  "vehicle": {
+                    "name": {
+                      "text": "Subway"
+                    },
+                    "type": "SUBWAY",
+                    "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/subway2.png"
+                  }
+                },
+                "stopCount": 2
+              }
+            },
+            {},
+            {},
+            {},
+            {}
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "steps": [
+            {},
+            {},
+            {},
+            {
+              "transitDetails": {
+                "stopDetails": {
+                  "arrivalStop": {
+                    "name": "5 Av",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.753822,
+                        "longitude": -73.981963999999991
+                      }
+                    }
+                  },
+                  "arrivalTime": "2024-10-16T01:37:05Z",
+                  "departureStop": {
+                    "name": "Vernon Blvd-Jackson Av",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.742626,
+                        "longitude": -73.953583
+                      }
+                    }
+                  },
+                  "departureTime": "2024-10-16T01:31:05Z"
+                },
+                "localizedValues": {
+                  "arrivalTime": {
+                    "time": {
+                      "text": "9:37 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  },
+                  "departureTime": {
+                    "time": {
+                      "text": "9:31 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  }
+                },
+                "headsign": "34 St-Hudson Yards",
+                "headway": "180s",
+                "transitLine": {
+                  "agencies": [
+                    {
+                      "name": "MTA New York City Transit",
+                      "phoneNumber": "+1 718-330-1234",
+                      "uri": "http://www.mta.info/"
+                    }
+                  ],
+                  "name": "7 Train (Flushing Local and Express)",
+                  "uri": "https://new.mta.info/document/9461",
+                  "color": "#b933ad",
+                  "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/us-ny-mta/7.png",
+                  "nameShort": "7",
+                  "textColor": "#ffffff",
+                  "vehicle": {
+                    "name": {
+                      "text": "Subway"
+                    },
+                    "type": "SUBWAY",
+                    "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/subway2.png"
+                  }
+                },
+                "stopCount": 3
+              }
+            },
+            {},
+            {
+              "transitDetails": {
+                "stopDetails": {
+                  "arrivalStop": {
+                    "name": "34 St-Herald Sq",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.749718,
+                        "longitude": -73.987822999999992
+                      }
+                    }
+                  },
+                  "arrivalTime": "2024-10-16T01:42:04Z",
+                  "departureStop": {
+                    "name": "42 St-Bryant Pk",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.754222999999996,
+                        "longitude": -73.984566
+                      }
+                    }
+                  },
+                  "departureTime": "2024-10-16T01:40:34Z"
+                },
+                "localizedValues": {
+                  "arrivalTime": {
+                    "time": {
+                      "text": "9:42 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  },
+                  "departureTime": {
+                    "time": {
+                      "text": "9:40 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  }
+                },
+                "headsign": "Coney Island-Stillwell Av",
+                "headway": "240s",
+                "transitLine": {
+                  "agencies": [
+                    {
+                      "name": "MTA New York City Transit",
+                      "phoneNumber": "+1 718-330-1234",
+                      "uri": "http://www.mta.info/"
+                    }
+                  ],
+                  "name": "F Train (6 Av Local)",
+                  "uri": "https://new.mta.info/document/10366",
+                  "color": "#f25e18",
+                  "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/us-ny-mta/F.png",
+                  "nameShort": "F Line",
+                  "textColor": "#ffffff",
+                  "vehicle": {
+                    "name": {
+                      "text": "Subway"
+                    },
+                    "type": "SUBWAY",
+                    "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/subway2.png"
+                  }
+                },
+                "stopCount": 2
+              }
+            },
+            {},
+            {},
+            {},
+            {}
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "steps": [
+            {},
+            {},
+            {},
+            {
+              "transitDetails": {
+                "stopDetails": {
+                  "arrivalStop": {
+                    "name": "5 Av",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.753822,
+                        "longitude": -73.981963999999991
+                      }
+                    }
+                  },
+                  "arrivalTime": "2024-10-16T01:44:43Z",
+                  "departureStop": {
+                    "name": "Vernon Blvd-Jackson Av",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.742626,
+                        "longitude": -73.953583
+                      }
+                    }
+                  },
+                  "departureTime": "2024-10-16T01:39:03Z"
+                },
+                "localizedValues": {
+                  "arrivalTime": {
+                    "time": {
+                      "text": "9:44 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  },
+                  "departureTime": {
+                    "time": {
+                      "text": "9:39 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  }
+                },
+                "headsign": "34 St-Hudson Yards",
+                "headway": "60s",
+                "transitLine": {
+                  "agencies": [
+                    {
+                      "name": "MTA New York City Transit",
+                      "phoneNumber": "+1 718-330-1234",
+                      "uri": "http://www.mta.info/"
+                    }
+                  ],
+                  "name": "7 Train (Flushing Local and Express)",
+                  "uri": "https://new.mta.info/document/9461",
+                  "color": "#b933ad",
+                  "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/us-ny-mta/7.png",
+                  "nameShort": "7",
+                  "textColor": "#ffffff",
+                  "vehicle": {
+                    "name": {
+                      "text": "Subway"
+                    },
+                    "type": "SUBWAY",
+                    "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/subway2.png"
+                  }
+                },
+                "stopCount": 3
+              }
+            },
+            {},
+            {
+              "transitDetails": {
+                "stopDetails": {
+                  "arrivalStop": {
+                    "name": "34 St-Herald Sq",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.749718,
+                        "longitude": -73.987822999999992
+                      }
+                    }
+                  },
+                  "arrivalTime": "2024-10-16T01:49:28Z",
+                  "departureStop": {
+                    "name": "42 St-Bryant Pk",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.754222999999996,
+                        "longitude": -73.984566
+                      }
+                    }
+                  },
+                  "departureTime": "2024-10-16T01:47:58Z"
+                },
+                "localizedValues": {
+                  "arrivalTime": {
+                    "time": {
+                      "text": "9:49 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  },
+                  "departureTime": {
+                    "time": {
+                      "text": "9:47 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  }
+                },
+                "headsign": "Coney Island-Stillwell Av",
+                "headway": "120s",
+                "transitLine": {
+                  "agencies": [
+                    {
+                      "name": "MTA New York City Transit",
+                      "phoneNumber": "+1 718-330-1234",
+                      "uri": "http://www.mta.info/"
+                    }
+                  ],
+                  "name": "F Train (6 Av Local)",
+                  "uri": "https://new.mta.info/document/10366",
+                  "color": "#f25e18",
+                  "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/us-ny-mta/F.png",
+                  "nameShort": "F Line",
+                  "textColor": "#ffffff",
+                  "vehicle": {
+                    "name": {
+                      "text": "Subway"
+                    },
+                    "type": "SUBWAY",
+                    "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/subway2.png"
+                  }
+                },
+                "stopCount": 2
+              }
+            },
+            {},
+            {},
+            {},
+            {}
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "steps": [
+            {},
+            {},
+            {},
+            {
+              "transitDetails": {
+                "stopDetails": {
+                  "arrivalStop": {
+                    "name": "Grand Central - 42 St",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.751431,
+                        "longitude": -73.976044
+                      }
+                    }
+                  },
+                  "arrivalTime": "2024-10-16T01:28:54Z",
+                  "departureStop": {
+                    "name": "Vernon Blvd-Jackson Av",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.742626,
+                        "longitude": -73.953583
+                      }
+                    }
+                  },
+                  "departureTime": "2024-10-16T01:24:24Z"
+                },
+                "localizedValues": {
+                  "arrivalTime": {
+                    "time": {
+                      "text": "9:28 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  },
+                  "departureTime": {
+                    "time": {
+                      "text": "9:24 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  }
+                },
+                "headsign": "34 St-Hudson Yards",
+                "headway": "240s",
+                "transitLine": {
+                  "agencies": [
+                    {
+                      "name": "MTA New York City Transit",
+                      "phoneNumber": "+1 718-330-1234",
+                      "uri": "http://www.mta.info/"
+                    }
+                  ],
+                  "name": "7 Train (Flushing Local and Express)",
+                  "uri": "https://new.mta.info/document/9461",
+                  "color": "#b933ad",
+                  "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/us-ny-mta/7.png",
+                  "nameShort": "7",
+                  "textColor": "#ffffff",
+                  "vehicle": {
+                    "name": {
+                      "text": "Subway"
+                    },
+                    "type": "SUBWAY",
+                    "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/subway2.png"
+                  }
+                },
+                "stopCount": 2
+              }
+            },
+            {},
+            {
+              "transitDetails": {
+                "stopDetails": {
+                  "arrivalStop": {
+                    "name": "33 St",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.746082,
+                        "longitude": -73.982079
+                      }
+                    }
+                  },
+                  "arrivalTime": "2024-10-16T01:36:33Z",
+                  "departureStop": {
+                    "name": "Grand Central-42 St",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.751778,
+                        "longitude": -73.976845
+                      }
+                    }
+                  },
+                  "departureTime": "2024-10-16T01:34:33Z"
+                },
+                "localizedValues": {
+                  "arrivalTime": {
+                    "time": {
+                      "text": "9:36 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  },
+                  "departureTime": {
+                    "time": {
+                      "text": "9:34 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  }
+                },
+                "headsign": "Brooklyn Bridge-City Hall",
+                "headway": "420s",
+                "transitLine": {
+                  "agencies": [
+                    {
+                      "name": "MTA New York City Transit",
+                      "phoneNumber": "+1 718-330-1234",
+                      "uri": "http://www.mta.info/"
+                    }
+                  ],
+                  "name": "6 Train (Lexington Av Local/Pelham Express)",
+                  "uri": "https://new.mta.info/document/9456",
+                  "color": "#00933c",
+                  "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/us-ny-mta/6.png",
+                  "nameShort": "6 Train",
+                  "textColor": "#ffffff",
+                  "vehicle": {
+                    "name": {
+                      "text": "Subway"
+                    },
+                    "type": "SUBWAY",
+                    "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/subway2.png"
+                  }
+                },
+                "stopCount": 2
+              }
+            },
+            {},
+            {},
+            {},
+            {}
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "steps": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {
+              "transitDetails": {
+                "stopDetails": {
+                  "arrivalStop": {
+                    "name": "34 St-Herald Sq",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.749718,
+                        "longitude": -73.987822999999992
+                      }
+                    }
+                  },
+                  "arrivalTime": "2024-10-16T01:53:30Z",
+                  "departureStop": {
+                    "name": "Court Sq-23 St",
+                    "location": {
+                      "latLng": {
+                        "latitude": 40.747845,
+                        "longitude": -73.945999
+                      }
+                    }
+                  },
+                  "departureTime": "2024-10-16T01:43:30Z"
+                },
+                "localizedValues": {
+                  "arrivalTime": {
+                    "time": {
+                      "text": "9:53 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  },
+                  "departureTime": {
+                    "time": {
+                      "text": "9:43 PM"
+                    },
+                    "timeZone": "America/New_York"
+                  }
+                },
+                "headsign": "Bay Ridge-95 St",
+                "headway": "600s",
+                "transitLine": {
+                  "agencies": [
+                    {
+                      "name": "MTA New York City Transit",
+                      "phoneNumber": "+1 718-330-1234",
+                      "uri": "http://www.mta.info/"
+                    }
+                  ],
+                  "name": "R Train (Broadway Local)",
+                  "uri": "https://new.mta.info/document/9521",
+                  "color": "#f2c40a",
+                  "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/us-ny-mta/R.png",
+                  "nameShort": "R Line",
+                  "textColor": "#000000",
+                  "vehicle": {
+                    "name": {
+                      "text": "Subway"
+                    },
+                    "type": "SUBWAY",
+                    "iconUri": "//maps.gstatic.com/mapfiles/transit/iw2/6/subway2.png"
+                  }
+                },
+                "stopCount": 6
+              }
+            },
+            {},
+            {},
+            {},
+            {}
+          ]
+        }
+      ]
+    }
+  ]
+}
