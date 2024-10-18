@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -116,6 +117,28 @@ public class RouteController {
       }
     }
   }
+
+  @DeleteMapping("/deleteAnno")
+  public ResponseEntity<?> deleteAnnotation(
+      @RequestParam("routeID") String routeID,
+      @RequestParam("userID") String userID) {
+    try {
+      DatabaseOperation db = new DatabaseOperation(true, routeID, userID);
+      String result = db.DeleteAnno(routeID, userID);
+
+      if ("Delete success".equals(result)) {
+        return new ResponseEntity<>(result, HttpStatus.OK);
+      } else if ("Annotation not found".equals(result)) {
+        return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
+      } else {
+        return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+      }
+    } catch (Exception e) {
+      return handleException(e);
+    }
+  }
+
+
   private ResponseEntity<?> handleException(Exception e) {
     System.out.println(e.toString());
     return new ResponseEntity<>("An Error has occurred", HttpStatus.NOT_FOUND);

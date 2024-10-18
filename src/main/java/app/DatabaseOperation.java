@@ -17,7 +17,8 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 
 public class DatabaseOperation{
-  
+
+
   public DatabaseOperation(String origin, String destination){
     String connectionString = "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster4156";
     MongoClient mongoClient = MongoClients.create(connectionString);
@@ -41,7 +42,7 @@ public class DatabaseOperation{
       System.out.println("Error: " + e.getMessage());
       return "An Error has occurred";
     }
-    
+
 
   }
 
@@ -52,10 +53,10 @@ public class DatabaseOperation{
     this.collection = database.getCollection("Route");
     this.collection2 = database.getCollection("Annotation");
   }
-  
+
   public String FindRoutebyIDs(String RouteID){
     try{
-      
+
       Document query = new Document("RouteID", RouteID);
       FindIterable<Document> results = this.collection.find(query).limit(1);
       Document document = results.first();
@@ -70,7 +71,7 @@ public class DatabaseOperation{
       System.out.println("Error: " + e.getMessage());
       return "An Error has occurred";
     }
-    
+
 
   }
 
@@ -91,7 +92,7 @@ public class DatabaseOperation{
       System.out.println("Error: " + e.getMessage());
       return "An Error has occurred";
     }
-    
+
 
   }
   public String UpdateAnno(String RouteID, String UserID, List<Map<String, Object>> stopList){
@@ -119,6 +120,23 @@ public class DatabaseOperation{
         return "An Error has occurred";
     }
   }
+
+  public String DeleteAnno(String routeID, String userID) {
+    try {
+      Document query = new Document("RouteID", routeID).append("UserID", userID);
+      long deletedCount = collection2.deleteOne(query).getDeletedCount();
+      if (deletedCount > 0) {
+        return "Delete success";
+      } else {
+        return "Annotation not found";
+      }
+    } catch (Exception e) {
+      System.out.println("Error: " + e.getMessage());
+      return "An Error has occurred";
+    }
+  }
+
+
 
   private ResponseEntity<?> handleException(Exception e) {
     System.out.println(e.toString());
