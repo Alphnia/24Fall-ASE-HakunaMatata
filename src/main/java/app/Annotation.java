@@ -2,7 +2,6 @@ package app;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,32 +9,54 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class Annotation {
-  public Annotation(){
+
+  /**
+   * construction.
+   */
+  public Annotation() {
     
   }
-  public Annotation(int annoID, int routeID, int userID, List<Map<String, Object> > StopList){
-    this.annoID = annoID;
-    this.routeID = routeID;
-    this.userID = userID;
-    this.StopList = StopList;
-  }
-  public int getAnnoID(){
-    return this.annoID;
+
+  /**
+   * Always use this construction.
+   */
+  public Annotation(int annoId, int routeId, int userId, List<Map<String, Object>> stopList) {
+    this.annoId = annoId;
+    this.routeId = routeId;
+    this.userId = userId;
+    this.stopList = stopList;
   }
 
-  public int getRouteID(){
-    return this.routeID;
+  /**
+   * get Annotation Id.
+   */
+  public int getAnnoId() {
+    return this.annoId;
+  }
+
+  /**
+   * get Route Id.
+   */
+  public int getRouteId() {
+    return this.routeId;
   }
   
-  public int getUserID(){
-    return this.userID;
+  /**
+   * get User Id.
+   */
+  public int getUserId() {
+    return this.userId;
   }
-  public List<Map<String, Object>> getStopList (){
-    return this.StopList;
+
+  /**
+   * get stop list.
+   */
+  public List<Map<String, Object>> getStopList() {
+    return this.stopList;
   }
   
-  private int annoID;
-  private int routeID;
-  private int userID;
-  private List<Map<String, Object>> StopList; 
+  private int annoId;
+  private int routeId;
+  private int userId;
+  private List<Map<String, Object>> stopList; 
 }

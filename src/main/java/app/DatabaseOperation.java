@@ -1,13 +1,5 @@
 package app;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import org.bson.Document;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -15,115 +7,142 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import org.bson.Document;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-public class DatabaseOperation{
+/**
+ * database operation for annotation.
+ */
+public class DatabaseOperation {
 
-
-  public DatabaseOperation(String origin, String destination){
-    String connectionString = "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster4156";
-    MongoClient mongoClient = MongoClients.create(connectionString);
-    this.database = mongoClient.getDatabase("Hkunamatata_DB");
-    this.collection = database.getCollection("Route");
-  }
-
-  public String FindDocumentbyOriDes(String origin, String destination){
-    try{
-      List<String> OriDes = Arrays.asList(origin, destination);
-      System.out.println("before");
-      Document document = new Document("OriDes", OriDes);
-      FindIterable<Document> results = this.collection.find(document).limit(1);
-      if (document != null) {
-          System.out.println("Record found: " + document.toJson());
-      } else {
-          System.out.println("No record found.");
-      }
-      return document.toJson();
-    }catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
-      return "An Error has occurred";
-    }
-
-
-  }
-
-  public DatabaseOperation(Boolean flag, String RouteID, String UserID){
-    String connectionString = "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster4156";
+  /**
+   * Constructor that initializes a DatabaseOperation instance with a MongoDB connection
+   * and retrieves the "Route" and "Annotation" collections based on route Id and user Id.
+   *
+   * @param flag A boolean flag.
+   * 
+   * @param routeId The route Id.
+   * @param userId The user Id.
+   */
+  public DatabaseOperation(Boolean flag, String routeId, String userId) {
+    String connectionString = 
+        "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
+        + "?retryWrites=true&w=majority&appName=Cluster4156";
     MongoClient mongoClient = MongoClients.create(connectionString);
     this.database = mongoClient.getDatabase("Hkunamatata_DB");
     this.collection = database.getCollection("Route");
     this.collection2 = database.getCollection("Annotation");
   }
 
-  public String FindRoutebyIDs(String RouteID){
-    try{
-
-      Document query = new Document("RouteID", RouteID);
+  /**
+   * Finds a route document in the "Route" collection by the route Id.
+   *
+   * @param routeId The route Id to search for.
+   * @return The JSON representation of the found document, or null if not found.
+   */
+  public String findRoutebyIds(String routeId) {
+    try {
+      Document query = new Document("RouteID", routeId);
       FindIterable<Document> results = this.collection.find(query).limit(1);
       Document document = results.first();
       if (document != null) {
-          System.out.println("Record found: " + document.toJson());
-          return document.toJson();
+        System.out.println("Record found: " + document.toJson());
+        return document.toJson();
       } else {
-          System.out.println("No record found.");
-          return null;
+        System.out.println("No record found.");
+        return null;
       }
-    }catch (Exception e) {
+    } catch (Exception e) {
       System.out.println("Error: " + e.getMessage());
       return "An Error has occurred";
     }
-
-
   }
 
-  public String FindAnnotationbyIDs(String RouteID, String UserID){
-    try{
-      List<String> IDs = Arrays.asList(RouteID, UserID);
-      Document query = new Document("IDs", IDs);
+  /**
+   * Finds an annotation document in the "Annotation" collection by the route Id and user Id.
+   *
+   * @param routeId The route Id to search for.
+   * @param userId The user Id to search for.
+   * @return The JSON representation of the found document, or null if not found.
+   */
+  public String findAnnotationbyIds(String routeId, String userId) {
+    try {
+      List<String> ids = Arrays.asList(routeId, userId);
+      Document query = new Document("Ids", ids);
       FindIterable<Document> results = this.collection.find(query).limit(1);
       Document document = results.first();
       if (document != null) {
-          System.out.println("Record found: " + document.toJson());
-          return document.toJson();
+        System.out.println("Record found: " + document.toJson());
+        return document.toJson();
       } else {
-          System.out.println("No record found.");
-          return null;
+        System.out.println("No record found.");
+        return null;
       }
-    }catch (Exception e) {
+    } catch (Exception e) {
       System.out.println("Error: " + e.getMessage());
       return "An Error has occurred";
     }
-
-
   }
-  public String UpdateAnno(String RouteID, String UserID, List<Map<String, Object>> stopList){
+
+  /**
+   * Updates the annotation for a given route and user Id with a new stop list.
+   *
+   * @param routeId The route Id to update.
+   * @param userId The user Id to update.
+   * @param stopList The new stop list to be updated.
+   * @return "Update success" if the update is successful, or an error message.
+   */
+  public String updateAnno(String routeId, String userId, List<Map<String, Object>> stopList) {
     try {
       collection2.updateOne(
-        Filters.and(Filters.eq("RouteID", RouteID), Filters.eq("UserID", UserID)),
-        Updates.set("Stoplist", stopList));
-        return "Update success";
+          Filters.and(Filters.eq("RouteID", routeId), Filters.eq("UserID", userId)),
+          Updates.set("Stoplist", stopList));
+      return "Update success";
     } catch (Exception e) {
-        System.out.println("Error: " + e.getMessage());
-        return "An Error has occurred";
-    }
-  }
-  public String InsertAnno(String RouteID, String UserID, List<Map<String, Object>> stopList){
-    try {
-      long count = collection2.countDocuments();
-      Document Doc = new Document("AnnoID", count)
-                    .append("RouteID", RouteID)
-                    .append("UserID", UserID)
-                    .append("Stoplist", stopList);
-      collection2.insertOne(Doc);
-      return "Insert success";
-    } catch (Exception e) {
-        System.out.println("Error: " + e.getMessage());
-        return "An Error has occurred";
+      System.out.println("Error: " + e.getMessage());
+      return "An Error has occurred";
     }
   }
 
-  public String DeleteAnno(String routeID, String userID) {
+  /**
+   * Inserts a new annotation document into the "Annotation" collection.
+   *
+   * @param routeId The route Id of the annotation.
+   * @param userId The user Id of the annotation.
+   * @param stopList The stop list to be inserted.
+   * @return "Insert success" if the insertion is successful, or an error message.
+   */
+  public String insertAnno(String routeId, String userId, List<Map<String, Object>> stopList) {
     try {
-      Document query = new Document("RouteID", routeID).append("UserID", userID);
+      long count = collection2.countDocuments();
+      Document doc = new Document("AnnoID", count)
+                    .append("RouteID", routeId)
+                    .append("UserID", userId)
+                    .append("Stoplist", stopList);
+      collection2.insertOne(doc);
+      return "Insert success";
+    } catch (Exception e) {
+      System.out.println("Error: " + e.getMessage());
+      return "An Error has occurred";
+    }
+  }
+
+  /**
+   * Deletes an annotation document from the "Annotation" collection based on route Id and user Id.
+   *
+   * @param routeId The route Id to search for.
+   * @param userId The user Id to search for.
+   * @return "Delete success" if the annotation is deleted, 
+   *         "Annotation not found" if no matching annotation is found,
+   *         or an error message.
+   */
+  public String deleteAnno(String routeId, String userId) {
+    try {
+      Document query = new Document("RouteID", routeId).append("UserID", userId);
       long deletedCount = collection2.deleteOne(query).getDeletedCount();
       if (deletedCount > 0) {
         return "Delete success";
@@ -135,8 +154,6 @@ public class DatabaseOperation{
       return "An Error has occurred";
     }
   }
-
-
 
   private ResponseEntity<?> handleException(Exception e) {
     System.out.println(e.toString());
