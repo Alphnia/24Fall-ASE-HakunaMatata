@@ -2,7 +2,6 @@ package app;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Map;
 import org.springframework.http.HttpEntity;
@@ -31,49 +30,6 @@ public class RouteController {
   private static final String API_URL = "https://routes.googleapis.com/directions/v2:computeRoutes";
   private static final String API_KEY = "AIzaSyDDe643HpTH5XXUBOZLNuJrcCFBdKM4k8Q"; // Your API key
   private static final String FIELD_MASK = "routes.legs.steps.transitDetails";
-  
-  /**
-   * Get function.
-   *
-   * 
-   */
-  @GetMapping("/")
-  public String sayHello() throws FileNotFoundException {
-    String origin = "E 73rd St, New York, NY 10021"; 
-    //"28-30 Jackson Ave,Long Island City,NY 11101";
-    String destination = "162-124 E Broadway, New York, NY 10002"; 
-    //"116th and Broadway, New York, NY 10027";
-    RouteRequestGoogle routeRequest = 
-        new RouteRequestGoogle(origin, destination);
-    Map<String, Object> entity = routeRequest.getRequestEntity();
-    // computeRoutes(entity);
-    // ResponseEntity<String> r = computeRoutes(entity);
-    // ResponseEntity<?> response = retrieveRoute(origin, destination);
-    // System.out.println("The response:" + response.getBody());
-    ResponseEntity<?> del = deleteRoute(origin, destination);
-    System.out.println("Delete:" + del.getBody());
-    // System.out.println(r.getBody());
-    // retrieveRoute(origin,destination);
-    // String"Retrieve response:"+ .getBody()
-    // System.out.println("Hello, World!");
-    // ReadJSON j = new ReadJSON(r.getBody());
-    // String [] fruits = j.getContent();
-
-    // for (String fruit : fruits) {
-    //   System.out.println(fruit);
-    // }
-    // System.out.println("before read");
-    // FileReader reader = new FileReader("src/main/resources/googleResponse.json");
-    // JsonObject jsonRead = JsonParser.parseReader(reader).getAsJsonObject();
-    // ResponseEntity<String> googleResponse = computeRoutes(entity);
-    // ReadJSON jsonResponse = new ReadJSON(googleResponse.getBody());
-    // ReadJSON jsonResponse = new ReadJSON(jsonRead.toString());
-    // String[] stopList = jsonResponse.getContent();
-    // for (String s : stopList) {
-    //   System.out.println(s);
-    // }
-    return "Hello, World!";
-  }
 
   /**
    * Post function.
@@ -123,12 +79,10 @@ public class RouteController {
       if (doesRouteExists) {
         DatabaseOperation database = new DatabaseOperation(origin, destination);
         String document = database.findDocumentbyOriDes(origin, destination);
-        System.out.println("Find document:" + document);
         return new ResponseEntity<>(document, HttpStatus.OK);
       } else {
         RouteRequestGoogle routeRequest = new RouteRequestGoogle(origin, destination);
         Map<String, Object> entity = routeRequest.getRequestEntity();
-        
         // just for test phase
         FileReader reader = new FileReader("src/main/resources/googleResponse.json");
         JsonObject jsonRead = JsonParser.parseReader(reader).getAsJsonObject();
@@ -138,7 +92,6 @@ public class RouteController {
         String[] stopList = jsonResponse.getContent();
         // JsonObject rawJsonToy = new JsonObject();
         String rawJsonToy = "";
-        System.out.println("create a new document!");
         createRoute(rawJsonToy, origin, destination, stopList, stopList);
         return new ResponseEntity<>("Successfully Created!", HttpStatus.OK);
       }
@@ -167,11 +120,8 @@ public class RouteController {
       DatabaseOperation database = new DatabaseOperation(origin, destination);
       String document = database.findDocumentbyOriDes(origin, destination);
       if (document != null) {
-        // System.out.println("This route exists:" + OriDes);
-        // System.out.println(foundDocument.toJson());
         return new ResponseEntity<>(HttpStatus.OK);
       } else {
-        System.out.println("No route Found:");
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       }
     } catch (Exception e) {
@@ -251,7 +201,6 @@ public class RouteController {
   }
 
   private ResponseEntity<?> handleException(Exception e) {
-    System.out.println(e.toString());
     return new ResponseEntity<>("An Error has occurred", HttpStatus.NOT_FOUND);
   }
   

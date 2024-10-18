@@ -33,7 +33,6 @@ public class DatabaseOperation {
     MongoClient mongoClient = MongoClients.create(connectionString);
     this.database = mongoClient.getDatabase("Hkunamatata_DB");
     this.collection = database.getCollection("Route");
-    System.out.println("connect to server");
   }
 
   /**
@@ -46,19 +45,15 @@ public class DatabaseOperation {
       List<String> orides = Arrays.asList(origin, destination);
       Document document = new Document("OriDes", orides);
       FindIterable<Document> results = this.collection.find(document).limit(1);
-      System.out.println(results);
       MongoCursor<Document> cursor = results.iterator();
       if (cursor.hasNext()) {
         Document doc = cursor.next();
-        System.out.println("Record found: " + doc.toJson());
         return doc.toJson();
       } else {
-        System.out.println("No record found.");
         return null;
       }
       //return null;
     } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
       return "An Error has occurred";
     }
     
@@ -83,10 +78,8 @@ public class DatabaseOperation {
                     .append("Stoplist", stoplistArray)
                     .append("Annotatedlist", annotatedlistArray);
       collection.insertOne(newDocument);
-      System.out.println("Insert successfully!!!");
       return new ResponseEntity<>("Success", HttpStatus.OK);
     } catch (Exception e) {
-      System.out.println("Error: " + e.getMessage());
       return new ResponseEntity<>("Error in creating doc", HttpStatus.NOT_FOUND);
     }
     
@@ -103,10 +96,8 @@ public class DatabaseOperation {
       List<String> orides = Arrays.asList(origin, destination);
       DeleteResult result = this.collection.deleteOne(eq("OriDes", orides));
       if (result.getDeletedCount() > 0) {
-        System.out.println("Succefully deleted");
         return new ResponseEntity<>("Successfully deleted", HttpStatus.OK);
       } else {
-        System.out.println("Failed");
         return new ResponseEntity<>("Error in deleting doc",  HttpStatus.NOT_FOUND);
       }
 
@@ -117,7 +108,6 @@ public class DatabaseOperation {
   }
 
   private ResponseEntity<?> handleException(Exception e) {
-    System.out.println(e.toString());
     return new ResponseEntity<>("An Error has occurred", HttpStatus.OK);
   }
 
