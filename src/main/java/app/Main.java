@@ -4,24 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
-* Main function.
-*
-* 
-*/
+ * Main function.
+ */
 @SpringBootApplication
 public class Main {
-  /**
-  * Main function.
-  *
-  * 
-  */
   public static void main(String[] args) {
-    // RouteRequestGoogle r = new RouteRequestGoogle("28-30 Jackson Ave,Long Island City,NY 11101",
-    //     "116th and Broadway, New York, NY 10027");
-    // r.getRequestEntity();
-    // System.out.println(r.getRequestEntity());
-    // SpringApplication.run(Main.class, args);
-
     SpringApplication.run(Main.class, args);
   }
   //   String connectionString = "mongodb+srv:

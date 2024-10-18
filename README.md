@@ -1,5 +1,6 @@
 # 24Fall-ASE-HakunaMatata
 
+
 This is the GitHub repository for the team project of COMS 4156 Advanced Software Engineering.
 
 ## Building and Running a Local Instance
@@ -191,7 +192,28 @@ This section describes the endpoints that our service provides, as well as their
 * Description: Deletes the user specified by the ID.
   * Upon Success: HTTP 200 Status Code is returned if the deletion is successful.
   * Upon Failure: HTTP 404 Status Code if the user is not found.
- 
+
+#### GET /checkAnno
+* Checks if a route and corresponding annotation exist based on the provided routeId and userId.
+* Requires routeId and userId parameters.
+* Returns information on whether the annotation exists.
+* Upon Success: Returns HTTP 200 status indicating the annotation exists.
+* Upon Failure: Returns HTTP 404 status indicating either the route or annotation is missing.
+
+#### PATCH /editRoute
+* Edits or creates a new annotation document based on the provided routeId and userId.
+* Requires routeId, userId, and stopList parameters.
+* Returns success or error messages.
+* Upon Success: Returns HTTP 200 status indicating the annotation has been successfully updated or created.
+* Upon Failure: Returns HTTP 400 status if an error occurs during the operation.
+
+#### DELETE /deleteAnno
+* Deletes an annotation document based on the provided routeId and userId.
+* Requires routeId and userId parameters.
+* Returns information on the deletion result.
+* Upon Success: Returns HTTP 200 status indicating the annotation has been successfully deleted.
+* Upon Failure: Returns HTTP 404 status indicating the annotation was not found, or HTTP 400 status indicating an error occurred during the operation.
+
 ## APIs Test using Postman
 Make API calls through Postman: https:// </br>
 For local machine: http:127.0.0.1:8080/endpoint?arg=value </br>

@@ -2,37 +2,56 @@ package app;
 
 import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This class is annotation for routes.
  */
-// @RestController
+@Component
 public class Annotation {
+
   /**
-   * Returns the details of the specified route.
-   *
-   * 
+   * construction.
+   */
+  public Annotation() {
+    
+  }
+
+  /**
+   * Always use this construction.
    */
   public Annotation(int annoId, int routeId, int userId, List<Map<String, Object>> stopList) {
     this.annoId = annoId;
-    this.annoId = annoId;
+    this.routeId = routeId;
     this.userId = userId;
     this.stopList = stopList;
   }
 
+  /**
+   * get Annotation Id.
+   */
   public int getAnnoId() {
     return this.annoId;
   }
 
+  /**
+   * get Route Id.
+   */
   public int getRouteId() {
     return this.routeId;
   }
   
+  /**
+   * get User Id.
+   */
   public int getUserId() {
     return this.userId;
   }
 
+  /**
+   * get stop list.
+   */
   public List<Map<String, Object>> getStopList() {
     return this.stopList;
   }
