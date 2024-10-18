@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import java.util.*;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,7 +16,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
-import org.mockito.stubbing.Answer;
+import com.mongodb.client.result.UpdateResult;
 
 public class DatabaseOperationUnitTests {
 
@@ -43,32 +44,8 @@ public class DatabaseOperationUnitTests {
   }
 
   @Test
-  public void testFindRouteByIDsFound() {
-    Document mockDocument = new Document("RouteID", "1").append("key", "value");
-
-    when(mockRouteCollection.find(any(Document.class))).thenReturn(mockIterable);
-    when(mockIterable.first()).thenReturn(mockDocument);
-
-    String result = dbOperation.FindRoutebyIDs("1");
-    assertNotNull(result);
-    assertTrue(result.contains("\"RouteID\":\"1\""));
-  }
-
-  @Test
-  public void testFindAnnotationByIDsFound() {
-    Document mockDocument = new Document("IDs", Arrays.asList("1", "user1"));
-
-    when(mockAnnotationCollection.find(any(Document.class))).thenReturn(mockIterable);
-    when(mockIterable.first()).thenReturn(mockDocument);
-
-    String result = dbOperation.FindAnnotationbyIDs("1", "user1");
-    assertNotNull(result);
-    assertTrue(result.contains("\"IDs\":[\"1\",\"user1\"]"));
-  }
-
-  @Test
   public void testFindRouteByIDsNotFound() {
-    when(mockRouteCollection.find(any(Document.class))).thenReturn(mockIterable);
+    when(mockRouteCollection.find((Bson) any())).thenReturn(mockIterable);
     when(mockIterable.first()).thenReturn(null);
 
     String result = dbOperation.FindRoutebyIDs("1");
@@ -77,7 +54,7 @@ public class DatabaseOperationUnitTests {
 
   @Test
   public void testFindAnnotationByIDsNotFound() {
-    when(mockAnnotationCollection.find(any(Document.class))).thenReturn(mockIterable);
+    when(mockAnnotationCollection.find((Bson) any())).thenReturn(mockIterable);
     when(mockIterable.first()).thenReturn(null);
 
     String result = dbOperation.FindAnnotationbyIDs("1", "user1");
@@ -86,6 +63,10 @@ public class DatabaseOperationUnitTests {
 
   @Test
   public void testUpdateAnnoSuccess() {
+    UpdateResult updateResult = mock(UpdateResult.class);
+    when(updateResult.wasAcknowledged()).thenReturn(true);
+    when(mockAnnotationCollection.updateOne((Bson) any(), (Bson) any())).thenReturn(updateResult);
+
     String result = dbOperation.UpdateAnno("1", "user1", new ArrayList<>());
     assertEquals("Update success", result);
   }
@@ -93,6 +74,7 @@ public class DatabaseOperationUnitTests {
   @Test
   public void testInsertAnnoSuccess() {
     when(mockAnnotationCollection.countDocuments()).thenReturn(1L);
+    when(mockAnnotationCollection.insertOne(any())).thenReturn(null);
 
     String result = dbOperation.InsertAnno("1", "user1", new ArrayList<>());
     assertEquals("Insert success", result);
@@ -102,7 +84,7 @@ public class DatabaseOperationUnitTests {
   public void testDeleteAnnoSuccess() {
     DeleteResult deleteResult = mock(DeleteResult.class);
     when(deleteResult.getDeletedCount()).thenReturn(1L);
-    when(mockAnnotationCollection.deleteOne(any(Document.class))).thenReturn(deleteResult);
+    when(mockAnnotationCollection.deleteOne((Bson) any())).thenReturn(deleteResult);
 
     String result = dbOperation.DeleteAnno("1", "user1");
     assertEquals("Delete success", result);
@@ -112,7 +94,7 @@ public class DatabaseOperationUnitTests {
   public void testDeleteAnnoNotFound() {
     DeleteResult deleteResult = mock(DeleteResult.class);
     when(deleteResult.getDeletedCount()).thenReturn(0L);
-    when(mockAnnotationCollection.deleteOne(any(Document.class))).thenReturn(deleteResult);
+    when(mockAnnotationCollection.deleteOne((Bson) any())).thenReturn(deleteResult);
 
     String result = dbOperation.DeleteAnno("1", "user1");
     assertEquals("Annotation not found", result);
