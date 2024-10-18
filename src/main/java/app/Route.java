@@ -2,7 +2,6 @@ package app;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -10,38 +9,43 @@ import org.springframework.web.bind.annotation.RestController;
  */
 // @RestController
 public class Route {
-
-  public Route(int routeID, String rawjson, List<Map<String, Object>> OriDes, List<Map<String, Object>> StopList, List<Map<String, Object>> Annotatedlist) {
-    this.routeID = routeID;
+  /**
+  * Route function.
+  *
+  * 
+  */
+  public Route(int routeId, String rawjson, List<Map<String, Object>> orides,
+      List<Map<String, Object>> stoplist, List<Map<String, Object>> annotatedlist) {
+    this.routeId = routeId;
     this.rawjson = rawjson;
-    this.OriDes = OriDes;
-    this.StopList = StopList;
-    this.Annotatedlist = Annotatedlist;
+    this.orides = orides;
+    this.stoplist = stoplist;
+    this.annotatedlist = annotatedlist;
   }
 
-  public int getRouteID() {
-    return this.routeID;
+  public int getrouteId() {
+    return this.routeId;
   }
 
   public String getrawjson() {
     return this.rawjson;
   }
 
-  public List<Map<String, Object>> getOriDes() {
-    return this.OriDes;
+  public List<Map<String, Object>> getorides() {
+    return this.orides;
   }
 
-  public List<Map<String, Object>> getStopList() {
-    return this.StopList;
+  public List<Map<String, Object>> getstoplist() {
+    return this.stoplist;
   }
 
   public List<Map<String, Object>> getAnnotatedlist() {
-    return this.Annotatedlist;
+    return this.annotatedlist;
   }
 
-  private int routeID;
+  private int routeId;
   private String rawjson;
-  private List<Map<String, Object>> OriDes;
-  private List<Map<String, Object>> StopList;
-  private List<Map<String, Object>> Annotatedlist;
+  private List<Map<String, Object>> orides;
+  private List<Map<String, Object>> stoplist;
+  private List<Map<String, Object>> annotatedlist;
 }

@@ -1,25 +1,31 @@
 package app;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.util.ArrayList;
 
-public class ReadJSON {
+/**
+* ReadJson function.
+*
+* 
+*/
+public class ReadJson {
 
-  public ReadJSON(String jsonString) {
+  public ReadJson(String jsonString) {
     this.jsonString = jsonString;
   }
 
+  /**
+  * GetContent function.
+  *
+  * 
+  */ 
   public String[] getContent() {
     String[] stepArray = new String[0];
     try {
-      JsonArray routes = JsonParser.parseString(jsonString).getAsJsonObject().getAsJsonArray("routes");
+      JsonArray routes = 
+          JsonParser.parseString(jsonString).getAsJsonObject().getAsJsonArray("routes");
       JsonArray legs = routes.get(0).getAsJsonObject().get("legs").getAsJsonArray();
       JsonArray steps = legs.get(0).getAsJsonObject().get("steps").getAsJsonArray();
       ArrayList<String> stepList = new ArrayList<>();
@@ -45,5 +51,6 @@ public class ReadJSON {
       return stepArray;
     }
   }
+
   private String jsonString;
 }

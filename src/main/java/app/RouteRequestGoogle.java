@@ -2,11 +2,19 @@ package app;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
+/**
+ * RouteRequestGoogle.
+ * 
+ */
 public class RouteRequestGoogle {
 
+  /**
+   * RouteRequestGoogle initialization.
+   * 
+   */
   public RouteRequestGoogle(String origin, String destination) {
     this.origin.put("address", origin);
     this.destination.put("address", destination);
@@ -17,7 +25,18 @@ public class RouteRequestGoogle {
     allowedTravelModes.add("SUBWAY");
     this.transitPreferences.put("allowedTravelModes", allowedTravelModes);
   }
-  
+
+  /**
+  * Retrieves a map containing the request entity details.
+  *
+  * <p>
+  * This method constructs and returns a {@code Map} with keys representing
+  * various attributes related to the request, including origin, destination,
+  * travel mode, alternative route computation preference, and transit preferences.
+  * </p>
+  *
+  * @return A {@code Map<String, Object>} containing the request entity details.
+  */
   public Map<String, Object> getRequestEntity() {
     Map<String, Object> entity = new HashMap<>();
     entity.put("origin", this.origin);
