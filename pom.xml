@@ -28,18 +28,32 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- MongoDB Driver -->
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongodb-driver-sync</artifactId>
-			<version>4.9.0</version> 
+			<version>4.11.1</version> 
 		</dependency>
 
-		<!-- Spring Data MongoDB -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>4.11.0</version> 
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>de.flapdoodle.embed</groupId>
+			<artifactId>de.flapdoodle.embed.mongo</artifactId>
+			<version>3.5.1</version> 
+			<scope>test</scope>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>

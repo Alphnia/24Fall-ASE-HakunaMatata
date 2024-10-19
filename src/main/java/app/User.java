@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * User Profile class
  */
 
-@Document(collection = "users")
+ @Document(collection = "User_profile")
 public class User {
     @Id
     private ObjectId id; // MongoDB autogen id
