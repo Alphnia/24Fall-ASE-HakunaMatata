@@ -53,15 +53,18 @@ public class RouteController {
     
     HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(routeRequest, headers);
 
-    RestTemplate restTemplate = new RestTemplate();
-    ResponseEntity<String> response = restTemplate.exchange(
-        API_URL,
-        HttpMethod.POST,
-        requestEntity,
-        String.class
-    );
-
-    return response;
+    try {
+      RestTemplate restTemplate = new RestTemplate();
+      ResponseEntity<String> response = restTemplate.exchange(
+          API_URL,
+          HttpMethod.POST,
+          requestEntity,
+          String.class
+      );
+      return response;
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
   }
   
   /**
@@ -83,26 +86,34 @@ public class RouteController {
     try {
       boolean doesRouteExists;
       doesRouteExists = doesRouteExists(origin, destination).getStatusCode() == HttpStatus.OK;
-      
       if (doesRouteExists) {
         DatabaseOperation database = new DatabaseOperation(origin, destination);
         String document = database.findDocumentbyOriDes(origin, destination);
         return new ResponseEntity<>(document, HttpStatus.OK);
       } else {
-        RouteRequestGoogle routeRequest = new RouteRequestGoogle(origin, destination);
-        Map<String, Object> entity = routeRequest.getRequestEntity();
-        // just for test phase
-        FileReader reader = new FileReader("src/main/resources/googleResponse.json");
-        JsonObject jsonRead = JsonParser.parseReader(reader).getAsJsonObject();
-        // ResponseEntity<String> googleResponse = computeRoutes(entity);
-        // ReadJSON jsonResponse = new ReadJSON(googleResponse.getBody());
-        ReadJson jsonResponse = new ReadJson(jsonRead.toString());
-        String[] stopList = jsonResponse.getContent();
-        // JsonObject rawJsonToy = new JsonObject();
-        String rawJsonToy = "";
-        createRoute(rawJsonToy, origin, destination, stopList, stopList);
-        return new ResponseEntity<>("Successfully Created!", HttpStatus.OK);
-      }
+        if (origin != null && origin.matches("^[a-zA-Z0-9 .,-]+$")
+          && destination != null && destination.matches("^[a-zA-Z0-9 .,-]+$")){
+          RouteRequestGoogle routeRequest = new RouteRequestGoogle(origin, destination);
+          Map<String, Object> entity = routeRequest.getRequestEntity();
+          // just for test phase
+          // FileReader reader = new FileReader("src/main/resources/googleResponse.json");
+          // JsonObject jsonRead = JsonParser.parseReader(reader).getAsJsonObject();
+          // ReadJson jsonResponse = new ReadJson(jsonRead.toString());
+          ResponseEntity<String> googleResponse = computeRoutes(entity);
+          if (googleResponse.getStatusCode() == HttpStatus.NOT_FOUND){
+            return new ResponseEntity<>("Address not found.", HttpStatus.NOT_FOUND);
+          }
+          ReadJson jsonResponse = new ReadJson(googleResponse.getBody());
+          String[] stopList = jsonResponse.getContent();
+          
+          // JsonObject rawJsonToy = new JsonObject();
+          String rawJsonToy = "";
+          createRoute(rawJsonToy, origin, destination, stopList, stopList);
+          return new ResponseEntity<>("Successfully Created!", HttpStatus.OK);
+        } else{
+          return new ResponseEntity<>("Invalid Inputs!", HttpStatus.BAD_REQUEST);
+        }
+    }
     } catch (Exception e) {
       return handleException(e);
     }
@@ -125,13 +136,19 @@ public class RouteController {
   public ResponseEntity<?> doesRouteExists(@RequestParam("origin") String origin,
       @RequestParam("destination") String destination) {
     try {
-      DatabaseOperation database = new DatabaseOperation(origin, destination);
-      String document = database.findDocumentbyOriDes(origin, destination);
-      if (document != null) {
-        return new ResponseEntity<>(HttpStatus.OK);
-      } else {
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      if (origin != null && origin.matches("^[a-zA-Z0-9 ,.-]+$")
+        && destination != null && destination.matches("^[a-zA-Z0-9 ,.-]+$")){
+        DatabaseOperation database = new DatabaseOperation(origin, destination);
+        String document = database.findDocumentbyOriDes(origin, destination);
+        if (document != null) {
+          return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+          return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+      } else{
+        return new ResponseEntity<>("Invalid Inputs!", HttpStatus.BAD_REQUEST);
       }
+      
     } catch (Exception e) {
       return handleException(e);
     }

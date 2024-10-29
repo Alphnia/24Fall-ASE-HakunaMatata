@@ -4,6 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.util.ArrayList;
+import java.util.Set;
+
+// import org.hibernate.mapping.Set;
 
 /**
 * ReadJson function.
@@ -24,8 +27,10 @@ public class ReadJson {
   public String[] getContent() {
     String[] stepArray = new String[0];
     try {
-      JsonArray routes = 
-          JsonParser.parseString(jsonString).getAsJsonObject().getAsJsonArray("routes");
+      JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
+      // Set<String> responseKeys = jsonObject.keySet();
+      // String getKey = responseKeys.iterator().next();
+      JsonArray routes = jsonObject.getAsJsonArray("routes");
       JsonArray legs = routes.get(0).getAsJsonObject().get("legs").getAsJsonArray();
       JsonArray steps = legs.get(0).getAsJsonObject().get("steps").getAsJsonArray();
       ArrayList<String> stepList = new ArrayList<>();
@@ -45,7 +50,6 @@ public class ReadJson {
       stepArray = new String[stepList.size()];
       stepList.toArray(stepArray);
       return stepArray;
-
     } catch (Exception e) {
       e.printStackTrace();
       return stepArray;
