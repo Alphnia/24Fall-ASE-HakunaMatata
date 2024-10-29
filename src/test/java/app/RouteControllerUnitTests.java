@@ -51,6 +51,14 @@ public class RouteControllerUnitTests {
   }
 
   @Test
+  public void retrieveRouteTestInvalid() {
+    ResponseEntity<?> response = testRc.retrieveRoute("", destinationExists);
+    String expectedResult = "Invalid Inputs!";
+    System.out.println("response getBody"+response.getBody());
+    assertEquals(expectedResult, response.getBody());
+  }
+
+  @Test
   public void retrieveRouteNotExistsTest() {
     ResponseEntity<?> response = testRc.retrieveRoute(originNotExists, destinationNotExists);
     String expectedResult = "Successfully Created!";
