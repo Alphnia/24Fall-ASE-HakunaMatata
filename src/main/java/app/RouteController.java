@@ -53,15 +53,18 @@ public class RouteController {
     
     HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(routeRequest, headers);
 
-    RestTemplate restTemplate = new RestTemplate();
-    ResponseEntity<String> response = restTemplate.exchange(
-        API_URL,
-        HttpMethod.POST,
-        requestEntity,
-        String.class
-    );
-
-    return response;
+    try {
+      RestTemplate restTemplate = new RestTemplate();
+      ResponseEntity<String> response = restTemplate.exchange(
+          API_URL,
+          HttpMethod.POST,
+          requestEntity,
+          String.class
+      );
+      return response;
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
   }
   
   /**
@@ -89,25 +92,19 @@ public class RouteController {
         String document = database.findDocumentbyOriDes(origin, destination);
         return new ResponseEntity<>(document, HttpStatus.OK);
       } else {
-        if (origin != null && origin.matches("^[a-zA-Z0-9 .,-]+$")
-        && destination != null && destination.matches("^[a-zA-Z0-9 .,-]+$")){
-          RouteRequestGoogle routeRequest = new RouteRequestGoogle(origin, destination);
-          Map<String, Object> entity = routeRequest.getRequestEntity();
-          // just for test phase
-          FileReader reader = new FileReader("src/main/resources/googleResponse.json");
-          JsonObject jsonRead = JsonParser.parseReader(reader).getAsJsonObject();
-          // ResponseEntity<String> googleResponse = computeRoutes(entity);
-          // ReadJSON jsonResponse = new ReadJSON(googleResponse.getBody());
-          ReadJson jsonResponse = new ReadJson(jsonRead.toString());
-          String[] stopList = jsonResponse.getContent();
-          // JsonObject rawJsonToy = new JsonObject();
-          String rawJsonToy = "";
-          createRoute(rawJsonToy, origin, destination, stopList, stopList);
-          return new ResponseEntity<>("Successfully Created!", HttpStatus.OK);
-        } else{
-          return new ResponseEntity<>("Invalid Inputs!", HttpStatus.BAD_REQUEST);
-        }
-        
+        RouteRequestGoogle routeRequest = new RouteRequestGoogle(origin, destination);
+        Map<String, Object> entity = routeRequest.getRequestEntity();
+        // just for test phase
+        FileReader reader = new FileReader("src/main/resources/googleResponse.json");
+        JsonObject jsonRead = JsonParser.parseReader(reader).getAsJsonObject();
+        // ResponseEntity<String> googleResponse = computeRoutes(entity);
+        // ReadJSON jsonResponse = new ReadJSON(googleResponse.getBody());
+        ReadJson jsonResponse = new ReadJson(jsonRead.toString());
+        String[] stopList = jsonResponse.getContent();
+        // JsonObject rawJsonToy = new JsonObject();
+        String rawJsonToy = "";
+        createRoute(rawJsonToy, origin, destination, stopList, stopList);
+        return new ResponseEntity<>("Successfully Created!", HttpStatus.OK);
       }
     } catch (Exception e) {
       return handleException(e);
