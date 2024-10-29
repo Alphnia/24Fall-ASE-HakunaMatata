@@ -51,10 +51,28 @@ public class RouteControllerUnitTests {
   }
 
   @Test
-  public void retrieveRouteTestInvalid() {
+  public void retrieveRouteTestEmptyOrigin() {
     ResponseEntity<?> response = testRc.retrieveRoute("", destinationExists);
     String expectedResult = "Invalid Inputs!";
-    System.out.println("response getBody"+response.getBody());
+    assertEquals(expectedResult, response.getBody());
+  }
+
+  @Test
+  public void retrieveRouteTestEmptyDes() {
+    ResponseEntity<?> response = testRc.retrieveRoute(originExists, "");
+    String expectedResult = "Invalid Inputs!";
+    assertEquals(expectedResult, response.getBody());
+  }
+  @Test
+  public void retrieveRouteTestInvalidOrigin() {
+    ResponseEntity<?> response = testRc.retrieveRoute("hello", destinationExists);
+    String expectedResult = "Address not found.";
+    assertEquals(expectedResult, response.getBody());
+  }
+  @Test
+  public void retrieveRouteTestInvalidDes() {
+    ResponseEntity<?> response = testRc.retrieveRoute(originExists, "hello");
+    String expectedResult = "Address not found.";
     assertEquals(expectedResult, response.getBody());
   }
 
