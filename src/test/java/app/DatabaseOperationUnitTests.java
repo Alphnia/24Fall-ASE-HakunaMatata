@@ -78,7 +78,7 @@ public class DatabaseOperationUnitTests {
     when(mockAnnotationCollection.find((Bson) any())).thenReturn(mockIterable);
     when(mockIterable.first()).thenReturn(null);
 
-    String result = dbOperation.findAnnotationbyIds("1", "user1");
+    String result = dbOperation.findAnnotationbyIds("1", "34242");
     assertNull(result);
   }
 
