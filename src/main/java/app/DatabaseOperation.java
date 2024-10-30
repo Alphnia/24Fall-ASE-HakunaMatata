@@ -36,8 +36,8 @@ public class DatabaseOperation {
    */
   public DatabaseOperation(Boolean flag, String routeId, String userId) {
     String connectionString = 
-        "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
-        + "?retryWrites=true&w=majority&appName=Cluster4156";
+    "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
+        + "?retryWrites=true&w=majority&appName=Cluster4156&tsl=true";
     MongoClient mongoClient = MongoClients.create(connectionString);
     this.database = mongoClient.getDatabase("Hkunamatata_DB");
     this.collection = database.getCollection("Route");
@@ -52,8 +52,8 @@ public class DatabaseOperation {
   */
   public DatabaseOperation(String origin, String destination) {
     String connectionString = 
-        "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net"
-        + "/?retryWrites=true&w=majority&appName=Cluster4156";
+    "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
+        + "?retryWrites=true&w=majority&appName=Cluster4156&tsl=true";
     MongoClient mongoClient = MongoClients.create(connectionString);
     this.database = mongoClient.getDatabase("Hkunamatata_DB");
     this.collection = database.getCollection("Route");

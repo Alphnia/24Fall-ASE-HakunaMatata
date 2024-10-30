@@ -237,7 +237,7 @@ public class RouteController {
 
     String connectionString = 
         "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
-        + "?retryWrites=true&w=majority&appName=Cluster4156";
+        + "?retryWrites=true&w=majority&appName=Cluster4156&tsl=true";
     try (MongoClient mongoClient = MongoClients.create(connectionString)) {
       Map<String, String> mp = new HashMap<String, String>();
       mp.put("direction", "turn right at the first corner.");
@@ -255,7 +255,7 @@ public class RouteController {
       long count = collection.countDocuments();
       Document newDocument = new Document("AnnoID", count)
                     .append("RouteID", 1)
-                    .append("UserID", "670c4dab7013573300601f64")
+                    .append("UserID", "6713027fc2739561fe4a2b53")
                     .append("Stoplist", stoplist);
       try {
         collection.insertOne(newDocument);
@@ -270,106 +270,148 @@ public class RouteController {
     }
   }
 
+
   /**
    * Checks if a route and corresponding annotation exist based on the provided routeId and userId.
    *
-   * @param routeId The Id of the route to check.
-   * @param userId The Id of the user associated with the annotation.
-   * @return A ResponseEntity with an OK status if the annotation exists, 
-   *         or NOT_FOUND if either the route or annotation is missing.
+   * @param routeId A {@code String} representing the route's unique identifier.
+   * @param userId A {@code String} representing the user's unique identifier.
+   * 
+   * @return A {@code ResponseEntity} object containing either an HTTP 200 status if the annotation 
+   *         exists or a 404 NOT FOUND if either the route or annotation is missing. If inputs are invalid, 
+   *         returns a 400 BAD REQUEST.
    */
   @GetMapping(value = "/checkAnno", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> checkAnnos(@RequestParam("routeId") String routeId,
-        @RequestParam("userId") String userId) {
-    try {
-      DatabaseOperation db = new DatabaseOperation(true, routeId, userId);
-      String route = db.findRoutebyIds(routeId);
-      if (route != null) {
-        // System.out.println("This route exists:" + OriDes);
-        // System.out.println(foundDocument.toJson());
-        String annotation = db.findAnnotationbyIds(routeId, userId);
-        if (annotation != null) {
-          return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-          return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-      } else {
-        System.out.println("No route Found:");
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                                      @RequestParam("userId") String userId) {
+      try {
+          // Validate inputs: Check for null, empty, or invalid characters
+          if (routeId != null && routeId.matches("^[a-fA-F0-9]+$") &&
+              userId != null && userId.matches("^[a-fA-F0-9]+$")) {
+
+              // Proceed with database operations if inputs are valid
+              DatabaseOperation db = new DatabaseOperation(true, routeId, userId);
+              String route = db.findRoutebyIds(routeId);
+
+              if (route != null) {
+                  String annotation = db.findAnnotationbyIds(routeId, userId);
+                  if (annotation != null) {
+                      return new ResponseEntity<>(HttpStatus.OK);
+                  } else {
+                      return new ResponseEntity<>("Annotation not found", HttpStatus.NOT_FOUND);
+                  }
+              } else {
+                  return new ResponseEntity<>("Route not found", HttpStatus.NOT_FOUND);
+              }
+          } else {
+              // Return BAD_REQUEST if inputs are invalid
+              return new ResponseEntity<>("Invalid input: routeId and userId must contain only alphanumeric characters, underscores, or hyphens", 
+                                          HttpStatus.BAD_REQUEST);
+          }
+      } catch (Exception e) {
+          return handleException(e);
       }
-    } catch (Exception e) {
-      return handleException(e);
-    }
   }
 
   /**
    * Edits or creates a new annotation document based on the provided routeId and userId. 
    * If the annotation exists, it updates the stop list. If it does not exist, a new one is created.
    *
-   * @param routeId The Id of the route.
-   * @param userId The Id of the user associated with the annotation.
-   * @param stopList The list of stops to be added or updated in the annotation.
-   * @return A ResponseEntity with a success message if the operation is successful, 
-   *         or a BAD_REQUEST status if an error occurs.
+   * @param routeId A {@code String} representing the route's unique identifier.
+   * @param userId A {@code String} representing the user's unique identifier.
+   * @param stopList A {@code List} of stops to be added or updated in the annotation.
+   * @return A {@code ResponseEntity} object containing either a success message with HTTP 200 status
+   *         or a relevant error message with the appropriate status code.
    */
   @PatchMapping("/editRoute")
-  public ResponseEntity<?>  editRoute(
+  public ResponseEntity<?> editRoute(
         @RequestParam(value = "routeId") String routeId,
         @RequestParam(value = "userId") String userId,
         @RequestBody List<Map<String, Object>> stopList) {
-    boolean doesExist = (checkAnnos(routeId, userId).getStatusCode() == HttpStatus.OK);
 
-    DatabaseOperation db = new DatabaseOperation(true, routeId, userId);
-    if (doesExist) {
-      // edit
-      String result = db.updateAnno(routeId, userId, stopList);
-      if ("Update success".equals(result)) {
-        return new ResponseEntity<>(result, HttpStatus.OK);
-      } else {
-        return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+      try {
+          // 1. Validate inputs: Check for null, empty values, and malformed stopList
+          if (routeId == null || !routeId.matches("^[a-fA-F0-9]+$") ||
+              userId == null || !userId.matches("^[a-fA-F0-9]+$") ||
+              stopList == null || stopList.isEmpty()) {
+              return new ResponseEntity<>("Invalid input: routeId and userId must contain only alphanumeric characters, underscores, or hyphens. StopList cannot be empty.",
+                                          HttpStatus.BAD_REQUEST);
+          }
+
+          // 2. Check if the annotation exists
+          boolean doesExist = (checkAnnos(routeId, userId).getStatusCode() == HttpStatus.OK);
+
+          // 3. Initialize DatabaseOperation
+          DatabaseOperation db = new DatabaseOperation(true, routeId, userId);
+
+          if (doesExist) {
+              // Edit existing annotation
+              String result = db.updateAnno(routeId, userId, stopList);
+              if ("Update success".equals(result)) {
+                  return new ResponseEntity<>(result, HttpStatus.OK);
+              } else {
+                  return new ResponseEntity<>("Failed to update annotation", HttpStatus.BAD_REQUEST);
+              }
+          } else {
+              // Create new annotation
+              String result = db.insertAnno(routeId, userId, stopList);
+              if ("Insert success".equals(result)) {
+                  return new ResponseEntity<>(result, HttpStatus.OK);
+              } else {
+                  return new ResponseEntity<>("Failed to create annotation", HttpStatus.BAD_REQUEST);
+              }
+          }
+      } catch (Exception e) {
+          return handleException(e);
       }
-    } else {
-      // create
-      String result = db.insertAnno(routeId, userId, stopList);
-      if ("Insert success".equals(result)) {
-        return new ResponseEntity<>(result, HttpStatus.OK);
-      } else {
-        return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-      }
-    }
   }
+
 
   /**
    * Deletes an annotation document based on the provided routeId and userId.
    *
-   * @param routeId The Id of the route.
-   * @param userId The Id of the user associated with the annotation.
-   * @return A ResponseEntity with a success message if the deletion is successful, 
-   *         NOT_FOUND if the annotation does not exist, or a BAD_REQUEST status if an error occurs.
+   * @param routeId A {@code String} representing the route's unique identifier.
+   * @param userId A {@code String} representing the user's unique identifier.
+   * @return A {@code ResponseEntity} object containing either a success message with HTTP 200 status, 
+   *         NOT_FOUND if the annotation does not exist, or a BAD_REQUEST status if input validation fails.
    */
   @DeleteMapping("/deleteAnno")
   public ResponseEntity<?> deleteAnnotation(
       @RequestParam("routeId") String routeId,
       @RequestParam("userId") String userId) {
     try {
-      DatabaseOperation db = new DatabaseOperation(true, routeId, userId);
-      String result = db.deleteAnno(routeId, userId);
+        // 1. Validate inputs: Ensure routeId and userId are not null, empty, or contain invalid characters
+        if (routeId == null || !routeId.matches("^[a-fA-F0-9]+$") ||
+            userId == null || !userId.matches("^[a-fA-F0-9]+$")) {
+            return new ResponseEntity<>(
+                "Invalid input: routeId and userId must contain only alphanumeric characters, underscores, or hyphens.",
+                HttpStatus.BAD_REQUEST);
+        }
 
-      if ("Delete success".equals(result)) {
-        return new ResponseEntity<>(result, HttpStatus.OK);
-      } else if ("Annotation not found".equals(result)) {
-        return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
-      } else {
-        return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-      }
+        // 2. Proceed with deletion if inputs are valid
+        DatabaseOperation db = new DatabaseOperation(true, routeId, userId);
+        String result = db.deleteAnno(routeId, userId);
+
+        if ("Delete success".equals(result)) {
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else if ("Annotation not found".equals(result)) {
+            return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+        }
     } catch (Exception e) {
-      return handleException(e);
+        return handleException(e);
     }
   }
 
+  /**
+   * Handles exceptions and returns a standard NOT_FOUND response with an error message.
+   *
+   * @param e The exception that was thrown.
+   * @return A {@code ResponseEntity} with an error message and NOT_FOUND status.
+   */
   private ResponseEntity<?> handleException(Exception e) {
-    System.out.println(e.toString());
-    return new ResponseEntity<>("An Error has occurred", HttpStatus.NOT_FOUND);
+      System.out.println(e.toString());
+      return new ResponseEntity<>("An Error has occurred", HttpStatus.NOT_FOUND);
   }
-  
 }
