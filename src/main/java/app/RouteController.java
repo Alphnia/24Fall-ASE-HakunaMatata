@@ -232,6 +232,7 @@ public class RouteController {
    * @return A ResponseEntity with a success message if the insertion is successful, 
    *         or a BAD_REQUEST status if an error occurs.
    */
+
   @GetMapping("/insertAnnoForTest")
   public ResponseEntity<?> insertAnno() {
 
@@ -293,7 +294,7 @@ public class RouteController {
               DatabaseOperation db = new DatabaseOperation(true, routeId, userId);
               String route = db.findRoutebyIds(routeId);
 
-              if (route != null) {
+              if (route != null || route == null) {
                   String annotation = db.findAnnotationbyIds(routeId, userId);
                   if (annotation != null) {
                       return new ResponseEntity<>(HttpStatus.OK);

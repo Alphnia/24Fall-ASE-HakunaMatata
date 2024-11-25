@@ -168,10 +168,10 @@ public class RouteControllerUnitTests {
   @Test
   public void testcheckAnno_ValidInput()  {
     String routeId = "1";
-    String userId = "1";
+    String userId = "670c4dab7013573300601f64";
     ResponseEntity<?> response = testRc.checkAnnos(routeId, userId);
-    // System.out.println(response.getBody());
-    // assertEquals(HttpStatus.OK, response.getStatusCode());
+    System.out.println(response.getBody());
+    assertEquals(HttpStatus.OK, response.getStatusCode());
 
     routeId = "5";
     userId = "670c4dab7013573300601f64";

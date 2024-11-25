@@ -178,9 +178,9 @@ public class DatabaseOperation {
    */
   public String findAnnotationbyIds(String routeId, String userId) {
     try {
-      List<String> ids = Arrays.asList(routeId, userId);
-      Document query = new Document("Ids", ids);
-      FindIterable<Document> results = this.collection.find(query).limit(1);
+      // List<String> ids = Arrays.asList(routeId, userId);
+      Document query = new Document("RouteID", routeId).append("UserID", userId);
+      FindIterable<Document> results = this.collection2.find(query).limit(1);
       Document document = results.first();
       if (document != null) {
         System.out.println("Record found: " + document.toJson());
