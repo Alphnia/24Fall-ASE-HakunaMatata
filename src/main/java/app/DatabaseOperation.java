@@ -11,6 +11,8 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
+
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -64,13 +66,13 @@ public class DatabaseOperation {
   *
   * 
   */
-  public DatabaseOperation() {
+  public DatabaseOperation(String collection) {
     String connectionString = 
     "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
         + "?retryWrites=true&w=majority&appName=Cluster4156&tsl=true";
     MongoClient mongoClient = MongoClients.create(connectionString);
     this.database = mongoClient.getDatabase("Hkunamatata_DB");
-    this.collection = database.getCollection("Route");
+    this.collection = database.getCollection(collection);
   }
 
   /**
@@ -90,12 +92,32 @@ public class DatabaseOperation {
       } else {
         return null;
       }
-      //return null;
     } catch (Exception e) {
       return "An Error has occurred";
     }
     
 
+  }
+
+  /**
+  * getUserIdByAnnoId function.
+  *
+  * 
+  */
+  public String getUserIdByAnnoId(int annoId) {
+    try{
+      Document query = new Document("AnnoID", annoId);
+      FindIterable<Document> results = this.collection.find(query).limit(1);
+      MongoCursor<Document> cursor = results.iterator();
+      if (cursor.hasNext()) {
+        Document document = cursor.next();
+        return document.getString("UserID");
+      } else {
+        return null;
+      }
+    } catch (Exception e) {
+      return "An Error has occurred";
+    }
   }
 
   /**
@@ -116,6 +138,27 @@ public class DatabaseOperation {
                     .append("Stoplist", stoplistArray)
                     .append("Annotatedlist", annotatedlistArray);
       collection.insertOne(newDocument);
+      return new ResponseEntity<>("Success", HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>("Error in creating doc", HttpStatus.NOT_FOUND);
+    }
+    
+
+  }
+
+  /**
+  * createDocument function.
+  *
+  * 
+  */
+  public ResponseEntity<?> createDocument_track(String userId, Double latitude,
+      Double longitude, DateTimeFormatter timestamp) {
+    try {
+      List<Double> location = Arrays.asList(latitude, longitude);
+      Document doc = new Document("UserID", userId)
+          .append("Location", location)
+          .append("timestamp", timestamp);
+      this.collection.insertOne(doc);
       return new ResponseEntity<>("Success", HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>("Error in creating doc", HttpStatus.NOT_FOUND);

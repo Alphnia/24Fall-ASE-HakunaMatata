@@ -9,7 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+
 
 /**
  * this class deal with RESTful api requests about User Profile
@@ -22,24 +27,37 @@ public class RealTimeController {
   // 
 
   @GetMapping("/startShareLocation")
-  public ResponseEntity<Void> startShareLocation(@RequestParam("UserID") String UserID,
+  public ResponseEntity<?> startShareLocation(@RequestParam("UserID") String UserID,
     @RequestParam("AnnoID") String AnnoID){
       try {
-        return 
+        return new ResponseEntity<>(HttpStatus.OK);
       } catch (Exception e) {
         return handleException(e);
       }
   }
   
   @PutMapping("/update_location")
-    public ResponseEntity<Void> updateLocation(@RequestParam("origin") String origin,
-      @RequestParam("destination") String destination, @RequestParam("annoId") String annoId){
-        try {
-          DatabaseOperation database = new DatabaseOperation();
-        } catch (Exception e) {
-          return handleException(e);
+  public ResponseEntity<?> updateLocation(@RequestParam("latitude") Double latitude,
+  @RequestParam("longitude") Double longitude,
+  @RequestParam("annoId") String annoId){
+      try {
+        DatabaseOperation database = new DatabaseOperation("Annotation");
+        String userId = database.getUserIdByAnnoId(Integer.parseInt(annoId));
+        if (userId == null) {
+          return new ResponseEntity<>("Failed to update location", HttpStatus.BAD_REQUEST);
         }
-    }
+        Instant.now();
+        DateTimeFormatter formatter = DateTimeFormatter
+              .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+              .withZone(ZoneId.of("UTC"));
+        DatabaseOperation database_track = new DatabaseOperation("track_location");
+        database_track.createDocument_track(userId, latitude, longitude, formatter);
+
+        return new ResponseEntity<>("Successfully updated",HttpStatus.OK);
+      } catch (Exception e) {
+        return handleException(e);
+      }
+  }
 
 
     /**
