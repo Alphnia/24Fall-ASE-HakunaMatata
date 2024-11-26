@@ -168,6 +168,30 @@ public class DatabaseOperation {
   }
 
   /**
+   * Get the latest location of user A.
+   *
+   *
+   */
+  public Map<String, Object> getLatestLocation(String userId) {
+    try {
+      Document query = new Document("userID", userId);
+      Document sort = new Document("timestamp", -1); // Sort by timestamp descending
+      Document result = collection.find(query).sort(sort).first();
+
+      if (result != null) {
+        return Map.of(
+            "latitude", result.getDouble("latitude"),
+            "longitude", result.getDouble("longitude"),
+            "timestamp", result.getString("timestamp")
+        );
+      }
+      return null;
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to retrieve location data: " + e.getMessage());
+    }
+  }
+
+  /**
   * deleteDocument function.
   *
   * 

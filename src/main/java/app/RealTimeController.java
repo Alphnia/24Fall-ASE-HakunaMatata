@@ -1,4 +1,5 @@
 package app;
+import java.util.Map;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +36,9 @@ public class RealTimeController {
         return handleException(e);
       }
   }
+
+
+
   
   @PutMapping("/update_location")
   public ResponseEntity<?> updateLocation(@RequestParam("latitude") Double latitude,
@@ -57,6 +61,23 @@ public class RealTimeController {
       } catch (Exception e) {
         return handleException(e);
       }
+  }
+
+  @GetMapping("/trackLocation")
+  public ResponseEntity<?> trackLocation(@RequestParam("userID") String userID) {
+    try {
+      // Retrieve the latest location and timestamp from the "track_location" collection
+      DatabaseOperation tracking = new DatabaseOperation("track_location");
+      Map<String, Object> locationData = tracking.getLatestLocation(userID);
+
+      if (locationData == null) {
+        return new ResponseEntity<>("No location data found for UserID: " + userID, HttpStatus.NOT_FOUND);
+      }
+
+      return new ResponseEntity<>(locationData, HttpStatus.OK);
+    } catch (Exception e) {
+      return handleException(e);
+    }
   }
 
 
