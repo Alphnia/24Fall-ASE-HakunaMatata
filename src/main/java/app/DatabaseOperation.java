@@ -12,6 +12,9 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -174,15 +177,24 @@ public class DatabaseOperation {
    */
   public Map<String, Object> getLatestLocation(String userId) {
     try {
-      Document query = new Document("userID", userId);
-      Document sort = new Document("timestamp", -1); // Sort by timestamp descending
+      Document query = new Document("UserID", userId); // Fix case sensitivity
+      Document sort = new Document("Timestamp", -1); // Fix case sensitivity
       Document result = collection.find(query).sort(sort).first();
 
       if (result != null) {
+        List<Double> locationArray = result.getList("Location", Double.class);
+        double latitude = locationArray.get(0);
+        double longitude = locationArray.get(1);
+
+        Instant timestamp = result.getDate("Timestamp").toInstant();
+        String formattedTimestamp = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+            .withZone(ZoneId.systemDefault())
+            .format(timestamp);
+
         return Map.of(
-            "latitude", result.getDouble("latitude"),
-            "longitude", result.getDouble("longitude"),
-            "timestamp", result.getString("timestamp")
+            "latitude", latitude,
+            "longitude", longitude,
+            "timestamp", formattedTimestamp
         );
       }
       return null;
@@ -190,6 +202,7 @@ public class DatabaseOperation {
       throw new RuntimeException("Failed to retrieve location data: " + e.getMessage());
     }
   }
+
 
   /**
   * deleteDocument function.

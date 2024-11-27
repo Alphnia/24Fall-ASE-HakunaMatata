@@ -1,77 +1,79 @@
 package app;
-import java.util.Map;
-import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
+import java.util.Map;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
- * this class deal with RESTful api requests about User Profile
+ * this class deal with RESTful api requests about Real time location sharing.
  */
 
 @RestController
 @RequestMapping("/RealTime")
 public class RealTimeController {
   
-  // 
-
-  @GetMapping("/startShareLocation")
-  public ResponseEntity<?> startShareLocation(@RequestParam("UserID") String UserID,
-    @RequestParam("AnnoID") String AnnoID){
-      try {
-        return new ResponseEntity<>(HttpStatus.OK);
-      } catch (Exception e) {
-        return handleException(e);
-      }
-  }
-
-
-
-  
+  /**
+   * Update location returned from the client side.
+   *
+   * @param latitude The latitude of the User sharing location.
+   * 
+   * @param longitude The longitude of the User sharing location.
+   * 
+   * @param annoId The annotation Id of the route User shared.
+   * 
+   * @return A {@code ResponseEntity} with an error message and NOT_FOUND status.
+   *         A {@code ResponseEntity} with success message and 200 status.
+   */
   @PutMapping("/update_location")
   public ResponseEntity<?> updateLocation(@RequestParam("latitude") Double latitude,
-  @RequestParam("longitude") Double longitude,
-  @RequestParam("annoId") String annoId){
-      try {
-        DatabaseOperation database = new DatabaseOperation("Annotation");
-        String userId = database.getUserIdByAnnoId(Integer.parseInt(annoId));
-        if (userId == null) {
-          return new ResponseEntity<>("Failed to update location", HttpStatus.BAD_REQUEST);
-        }
-        Instant.now();
-        DateTimeFormatter formatter = DateTimeFormatter
-              .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-              .withZone(ZoneId.of("UTC"));
-        DatabaseOperation database_track = new DatabaseOperation("track_location");
-        database_track.createDocument_track(userId, latitude, longitude, formatter);
-
-        return new ResponseEntity<>("Successfully updated",HttpStatus.OK);
-      } catch (Exception e) {
-        return handleException(e);
+      @RequestParam("longitude") Double longitude,
+      @RequestParam("annoId") String annoId) {
+    try {
+      DatabaseOperation database = new DatabaseOperation("Annotation");
+      String userId = database.getUserIdByAnnoId(Integer.parseInt(annoId));
+      if (userId == null) {
+        return new ResponseEntity<>("Failed to update location", HttpStatus.BAD_REQUEST);
       }
+      Instant.now();
+      DateTimeFormatter formatter = DateTimeFormatter
+            .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            .withZone(ZoneId.of("UTC"));
+      DatabaseOperation databaseTrack = new DatabaseOperation("track_location");
+      databaseTrack.createDocument_track(userId, latitude, longitude, formatter);
+
+      return new ResponseEntity<>("Successfully updated", HttpStatus.OK);
+    } catch (Exception e) {
+      return handleException(e);
+    }
   }
 
+  /**
+   * A link another user can click to track this user's location.
+   *
+   * @param userId The user Id of the User who starts sharing route.
+   * 
+   * @return A {@code ResponseEntity} with an error message and NOT_FOUND status.
+   *         A {@code ResponseEntity} with location data and 200 status.
+   */
   @GetMapping("/trackLocation")
-  public ResponseEntity<?> trackLocation(@RequestParam("userID") String userID) {
+  public ResponseEntity<?> trackLocation(@RequestParam("userID") String userId) {
     try {
       // Retrieve the latest location and timestamp from the "track_location" collection
       DatabaseOperation tracking = new DatabaseOperation("track_location");
-      Map<String, Object> locationData = tracking.getLatestLocation(userID);
+      Map<String, Object> locationData = tracking.getLatestLocation(userId);
 
       if (locationData == null) {
-        return new ResponseEntity<>("No location data found for UserID: " + userID, HttpStatus.NOT_FOUND);
+        String message = "No location data found for UserID: " + userId;
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
       }
 
       return new ResponseEntity<>(locationData, HttpStatus.OK);
@@ -80,15 +82,14 @@ public class RealTimeController {
     }
   }
 
-
-    /**
-     * Handles exceptions and returns a standard NOT_FOUND response with an error message.
-     *
-     * @param e The exception that was thrown.
-     * @return A {@code ResponseEntity} with an error message and NOT_FOUND status.
-     */
-    private ResponseEntity<?> handleException(Exception e) {
-        System.out.println(e.toString());
-        return new ResponseEntity<>("An Error has occurred", HttpStatus.NOT_FOUND);
-    }
+  /**
+   * Handles exceptions and returns a standard NOT_FOUND response with an error message.
+   *
+   * @param e The exception that was thrown.
+   * @return A {@code ResponseEntity} with an error message and NOT_FOUND status.
+   */
+  private ResponseEntity<?> handleException(Exception e) {
+    System.out.println(e.toString());
+    return new ResponseEntity<>("An Error has occurred", HttpStatus.NOT_FOUND);
+  }
 }
