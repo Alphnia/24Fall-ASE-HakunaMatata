@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
+import StopCircleIcon from '@mui/icons-material/StopCircle';
 import { startShareLocation, stopShareLocation } from "./watchPosition";
 
 const ShareLocaion = () => {
@@ -21,7 +22,8 @@ const ShareLocaion = () => {
       <Button variant="contained" endIcon={<SendIcon />} onClick={startTracking}>
         Share Location
       </Button>
-      <Button variant="contained" endIcon={<SendIcon />} onClick={stopTracking}>
+      <br />
+      <Button variant="contained" endIcon={<StopCircleIcon />} onClick={stopTracking}>
         Stop Share Location
       </Button>
     </div>
