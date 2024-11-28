@@ -11,8 +11,6 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
-
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -29,7 +27,6 @@ import org.springframework.http.ResponseEntity;
  * database operation for annotation.
  */
 public class DatabaseOperation {
-
   /**
    * Constructor that initializes a DatabaseOperation instance with a MongoDB connection
    * and retrieves the "Route" and "Annotation" collections based on route Id and user Id.
@@ -41,7 +38,7 @@ public class DatabaseOperation {
    */
   public DatabaseOperation(Boolean flag, String routeId, String userId) {
     String connectionString = 
-    "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
+        "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
         + "?retryWrites=true&w=majority&appName=Cluster4156&tsl=true";
     MongoClient mongoClient = MongoClients.create(connectionString);
     this.database = mongoClient.getDatabase("Hkunamatata_DB");
@@ -57,7 +54,7 @@ public class DatabaseOperation {
   */
   public DatabaseOperation(String origin, String destination) {
     String connectionString = 
-    "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
+        "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
         + "?retryWrites=true&w=majority&appName=Cluster4156&tsl=true";
     MongoClient mongoClient = MongoClients.create(connectionString);
     this.database = mongoClient.getDatabase("Hkunamatata_DB");
@@ -71,13 +68,13 @@ public class DatabaseOperation {
   */
   public DatabaseOperation(String collection) {
     String connectionString = 
-    "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
+        "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
         + "?retryWrites=true&w=majority&appName=Cluster4156&tsl=true";
     MongoClient mongoClient = MongoClients.create(connectionString);
     this.database = mongoClient.getDatabase("Hkunamatata_DB");
     this.collection = database.getCollection(collection);
   }
-
+  
   /**
   * findDocumentbyOriDes function.
   *
@@ -108,7 +105,7 @@ public class DatabaseOperation {
   * 
   */
   public String getUserIdByAnnoId(int annoId) {
-    try{
+    try {
       Document query = new Document("AnnoID", annoId);
       FindIterable<Document> results = this.collection.find(query).limit(1);
       MongoCursor<Document> cursor = results.iterator();
@@ -233,7 +230,8 @@ public class DatabaseOperation {
    */
   public String findRoutebyIds(String routeId) {
     try {
-      Document query = new Document("RouteID", routeId);
+      int routeIdInt = Integer.parseInt(routeId);
+      Document query = new Document("RouteID", routeIdInt);
       FindIterable<Document> results = this.collection.find(query).limit(1);
       Document document = results.first();
       if (document != null) {
