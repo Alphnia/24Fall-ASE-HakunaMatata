@@ -51,14 +51,16 @@ public class RouteControllerUnitTests {
 
   @Test
   public void retrieveRouteExistsTest() {
-    ResponseEntity<?> response = testRc.retrieveRoute(originExists, destinationExists);
-    Document document = new Document("_id", new Document("$oid", "670e88a06240d7ba6b126824"))
+    String origin1="28-30 Jackson Ave,Long Island City,NY 11101";
+    String destination1 = "116th and Broadway, New York, NY 10027";
+    ResponseEntity<?> response = testRc.retrieveRoute(origin1, destination1);
+    Document document = new Document("_id", new Document("$oid", "670edd4166fb37bbbabbe914"))
             .append("rawjson", new BsonRegularExpression("", ""))
-            .append("Annotatedlist", Arrays.asList("0", "1"))
+            .append("Annotatedlist", Arrays.asList("2", "3"))
             .append("Stoplist", Arrays.asList(""))
             .append("OriDes", 
-            Arrays.asList("116th and Broadway, New York", "20 W 34th St., New York"))
-            .append("RouteID", 0);
+            Arrays.asList(origin1, destination1))
+            .append("RouteID", 1);
     String expectedResult = document.toJson();
     assertEquals(expectedResult, response.getBody());
   }
