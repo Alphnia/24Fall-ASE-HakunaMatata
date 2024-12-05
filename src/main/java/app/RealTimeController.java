@@ -6,11 +6,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 
 /**
@@ -20,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/RealTime")
 public class RealTimeController {
-  
   /**
    * Update location returned from the client side.
    *
@@ -34,10 +36,10 @@ public class RealTimeController {
    *         A {@code ResponseEntity} with success message and 200 status.
    */
   @PutMapping("/update_location")
-  public ResponseEntity<?> updateLocation(@RequestParam("latitude") Double latitude,
-      @RequestParam("longitude") Double longitude,
+  public ResponseEntity<?> updateLocation(@RequestBody Location location,
       @RequestParam("annoId") String annoId) {
     try {
+      System.out.println("ashley 1 ");
       DatabaseOperation database = new DatabaseOperation("Annotation");
       String userId = database.getUserIdByAnnoId(Integer.parseInt(annoId));
       if (userId == null) {
@@ -48,8 +50,8 @@ public class RealTimeController {
             .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             .withZone(ZoneId.of("UTC"));
       DatabaseOperation databaseTrack = new DatabaseOperation("track_location");
-      databaseTrack.createDocument_track(userId, latitude, longitude, formatter);
-
+      databaseTrack.createDocument_track(userId, location.getLatitude(), location.getLongitude(), formatter);
+      System.out.println("hi ashley: ");
       return new ResponseEntity<>("Successfully updated", HttpStatus.OK);
     } catch (Exception e) {
       return handleException(e);
