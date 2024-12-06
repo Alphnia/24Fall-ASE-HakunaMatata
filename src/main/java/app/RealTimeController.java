@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -47,13 +48,15 @@ public class RealTimeController {
           return new ResponseEntity<>("Failed to update location", HttpStatus.BAD_REQUEST);
         }
         Instant.now();
-        DateTimeFormatter formatter = DateTimeFormatter
-              .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-              .withZone(ZoneId.of("UTC"));
+        OffsetDateTime currentTime = OffsetDateTime.now();
+        String formattedTime = currentTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         DatabaseOperation database_track = new DatabaseOperation("track_location");
-        database_track.createDocument_track(userId, latitude, longitude, formatter);
-
-        return new ResponseEntity<>("Successfully updated",HttpStatus.OK);
+        ResponseEntity<?> response = database_track.createDocument_track(userId, latitude, longitude, formattedTime);
+        if(response.getStatusCode() == HttpStatus.OK){
+          return new ResponseEntity<>("Successfully updated",HttpStatus.OK);
+        } else {
+          return new ResponseEntity<>("Failed to insert database", HttpStatus.BAD_REQUEST);
+        }
       } catch (Exception e) {
         return handleException(e);
       }

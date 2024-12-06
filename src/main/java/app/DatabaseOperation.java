@@ -152,7 +152,7 @@ public class DatabaseOperation {
   * 
   */
   public ResponseEntity<?> createDocument_track(String userId, Double latitude,
-      Double longitude, DateTimeFormatter timestamp) {
+      Double longitude, String timestamp) {
     try {
       List<Double> location = Arrays.asList(latitude, longitude);
       Document doc = new Document("UserID", userId)
