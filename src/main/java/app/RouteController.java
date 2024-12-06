@@ -1,10 +1,14 @@
 package app;
 
-import com.mongodb.client.FindIterable;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.bson.Document;
@@ -88,7 +92,7 @@ public class RouteController {
         return new ResponseEntity<>(document, HttpStatus.OK);
       } else {
         if (origin != null && origin.matches("^[a-zA-Z0-9 .,-]+$")
-            && destination != null && destination.matches("^[a-zA-Z0-9 .,-]+$")) {
+          && destination != null && destination.matches("^[a-zA-Z0-9 .,-]+$")){
           RouteRequestGoogle routeRequest = new RouteRequestGoogle(origin, destination);
           Map<String, Object> entity = routeRequest.getRequestEntity();
           // just for test phase
@@ -96,7 +100,7 @@ public class RouteController {
           // JsonObject jsonRead = JsonParser.parseReader(reader).getAsJsonObject();
           // ReadJson jsonResponse = new ReadJson(jsonRead.toString());
           ResponseEntity<String> googleResponse = computeRoutes(entity);
-          if (googleResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
+          if (googleResponse.getStatusCode() == HttpStatus.NOT_FOUND){
             return new ResponseEntity<>("Address not found.", HttpStatus.NOT_FOUND);
           }
           ReadJson jsonResponse = new ReadJson(googleResponse.getBody());
@@ -106,10 +110,10 @@ public class RouteController {
           String rawJsonToy = "";
           createRoute(rawJsonToy, origin, destination, stopList, stopList);
           return new ResponseEntity<>("Successfully Created!", HttpStatus.OK);
-        } else {
+        } else{
           return new ResponseEntity<>("Invalid Inputs!", HttpStatus.BAD_REQUEST);
         }
-      }
+    }
     } catch (Exception e) {
       return handleException(e);
     }
@@ -133,7 +137,7 @@ public class RouteController {
       @RequestParam("destination") String destination) {
     try {
       if (origin != null && origin.matches("^[a-zA-Z0-9 ,.-]+$")
-          && destination != null && destination.matches("^[a-zA-Z0-9 ,.-]+$")) {
+        && destination != null && destination.matches("^[a-zA-Z0-9 ,.-]+$")){
         DatabaseOperation database = new DatabaseOperation(origin, destination);
         String document = database.findDocumentbyOriDes(origin, destination);
         if (document != null) {
@@ -141,7 +145,7 @@ public class RouteController {
         } else {
           return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-      } else {
+      } else{
         return new ResponseEntity<>("Invalid Inputs!", HttpStatus.BAD_REQUEST);
       }
       
@@ -221,52 +225,52 @@ public class RouteController {
     }
   }
 
-
   /**
-   * Query a photo annotation document into the MongoDB collection for testing.
+   * Inserts a new annotation document into the MongoDB collection for testing.
+   * Now just for developer testing
    *
-   * @return A ResponseEntity with a url if the query returns a item,
-   *         or a NOT_FOUND if not exists,
+   * @return A ResponseEntity with a success message if the insertion is successful, 
    *         or a BAD_REQUEST status if an error occurs.
    */
 
-  @GetMapping(value = "/queryPhotoAnno", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<?> queryPhotoAnno(@RequestParam("routeId") String routeId,
-                                    @RequestParam("userId") String userId,
-                                    @RequestParam("address") String addr) {
-    try {
-      // Validate inputs: Check for null, empty, or invalid characters
-      if (routeId != null && routeId.matches("^[a-fA-F0-9]+$") 
-          && userId != null && userId.matches("^[a-fA-F0-9]+$")) {
-        String connectionString = 
-            "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net"
-            + "/?retryWrites=true&w=majority&appName=Cluster4156&tsl=true";
-        try (MongoClient mongoClient = MongoClients.create(connectionString)) {
-        
-          MongoDatabase database = mongoClient.getDatabase("Hkunamatata_DB"); 
-          MongoCollection<Document> collection = database.getCollection("Photo_annotation");
-          Document query = new Document("RouteID", routeId)
-                .append("UserID", userId).append("Address", addr);
-          FindIterable<Document> results = collection.find(query).limit(1);
-            
-          Document doc = results.first();
-          if (doc != null) {
-            String url = doc.getString("Url");
-            return new ResponseEntity<>(url, HttpStatus.OK);
-          } else {
-            return new ResponseEntity<>("Annotation not found", HttpStatus.NOT_FOUND);
-          }
-        }
-      } else {
-        // Return BAD_REQUEST if inputs are invalid
-        return new ResponseEntity<>("Invalid input: routeId and userId must"
-              + "contain only alphanumeric characters, underscores, or hyphens", 
-                                    HttpStatus.BAD_REQUEST);
+  @GetMapping("/insertAnnoForTest")
+  public ResponseEntity<?> insertAnno() {
+
+    String connectionString = 
+        "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
+        + "?retryWrites=true&w=majority&appName=Cluster4156&tsl=true";
+    try (MongoClient mongoClient = MongoClients.create(connectionString)) {
+      Map<String, String> mp = new HashMap<String, String>();
+      mp.put("direction", "turn right at the first corner.");
+      Map<String, Object> node = new HashMap<String, Object>();
+      node.put("1", mp);
+      mp.clear();
+      mp.put("direction", "go straight until you see a traffic light.");
+      Map<String, Object> node2 = new HashMap<String, Object>();
+      node2.put("2", mp);
+      List<Map<String, Object>> stoplist = new ArrayList<Map<String, Object>>();
+      stoplist.add(node);
+      stoplist.add(node2);
+      MongoDatabase database = mongoClient.getDatabase("Hkunamatata_DB"); 
+      MongoCollection<Document> collection = database.getCollection("Annotation");
+      long count = collection.countDocuments();
+      Document newDocument = new Document("AnnoID", count)
+                    .append("RouteID", 1)
+                    .append("UserID", "6713027fc2739561fe4a2b53")
+                    .append("Stoplist", stoplist);
+      try {
+        collection.insertOne(newDocument);
+
+        return new ResponseEntity<>("Insert complete", HttpStatus.OK);
+
+      } catch (Exception e) {
+        return new ResponseEntity<>(".", HttpStatus.BAD_REQUEST);
       }
     } catch (Exception e) {
       return handleException(e);
     }
   }
+
 
   /**
    * Checks if a route and corresponding annotation exist based on the provided routeId and userId.
@@ -275,41 +279,39 @@ public class RouteController {
    * @param userId A {@code String} representing the user's unique identifier.
    * 
    * @return A {@code ResponseEntity} object containing either an HTTP 200 status if the annotation 
-   *         exists or a 404 NOT FOUND if either the route or annotation is missing. 
-   *         If inputs are invalid, 
+   *         exists or a 404 NOT FOUND if either the route or annotation is missing. If inputs are invalid, 
    *         returns a 400 BAD REQUEST.
    */
   @GetMapping(value = "/checkAnno", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> checkAnnos(@RequestParam("routeId") String routeId,
                                       @RequestParam("userId") String userId) {
-    try {
-      // Validate inputs: Check for null, empty, or invalid characters
-      if (routeId != null && routeId.matches("^[a-fA-F0-9]+$")
-          && userId != null && userId.matches("^[a-fA-F0-9]+$")) {
+      try {
+          // Validate inputs: Check for null, empty, or invalid characters
+          if (routeId != null && routeId.matches("^[a-fA-F0-9]+$") &&
+              userId != null && userId.matches("^[a-fA-F0-9]+$")) {
 
-        // Proceed with database operations if inputs are valid
-        DatabaseOperation db = new DatabaseOperation(true, routeId, userId);
-        String route = db.findRoutebyIds(routeId);
+              // Proceed with database operations if inputs are valid
+              DatabaseOperation db = new DatabaseOperation(true, routeId, userId);
+              String route = db.findRoutebyIds(routeId);
 
-        if (route != null) {
-          String annotation = db.findAnnotationbyIds(routeId, userId);
-          if (annotation != null) {
-            return new ResponseEntity<>(HttpStatus.OK);
+              if (route != null || route == null) {
+                  String annotation = db.findAnnotationbyIds(routeId, userId);
+                  if (annotation != null) {
+                      return new ResponseEntity<>(HttpStatus.OK);
+                  } else {
+                      return new ResponseEntity<>("Annotation not found", HttpStatus.NOT_FOUND);
+                  }
+              } else {
+                  return new ResponseEntity<>("Route not found", HttpStatus.NOT_FOUND);
+              }
           } else {
-            return new ResponseEntity<>("Annotation not found", HttpStatus.NOT_FOUND);
+              // Return BAD_REQUEST if inputs are invalid
+              return new ResponseEntity<>("Invalid input: routeId and userId must contain only alphanumeric characters, underscores, or hyphens", 
+                                          HttpStatus.BAD_REQUEST);
           }
-        } else {
-          return new ResponseEntity<>("Route not found", HttpStatus.NOT_FOUND);
-        }
-      } else {
-        // Return BAD_REQUEST if inputs are invalid
-        return new ResponseEntity<>("Invalid input: routeId and userId must contain only"
-              + "alphanumeric characters, underscores, or hyphens", 
-                                    HttpStatus.BAD_REQUEST);
+      } catch (Exception e) {
+          return handleException(e);
       }
-    } catch (Exception e) {
-      return handleException(e);
-    }
   }
 
   /**
@@ -319,8 +321,7 @@ public class RouteController {
    * @param routeId A {@code String} representing the route's unique identifier.
    * @param userId A {@code String} representing the user's unique identifier.
    * @param stopList A {@code List} of stops to be added or updated in the annotation.
-   * @return A {@code ResponseEntity} object containing either:
-   *         a success message with HTTP 200 status
+   * @return A {@code ResponseEntity} object containing either a success message with HTTP 200 status
    *         or a relevant error message with the appropriate status code.
    */
   @PatchMapping("/editRoute")
@@ -329,78 +330,78 @@ public class RouteController {
         @RequestParam(value = "userId") String userId,
         @RequestBody List<Map<String, Object>> stopList) {
 
-    try {
-      // 1. Validate inputs: Check for null, empty values, and malformed stopList
-      if (routeId == null || !routeId.matches("^[a-fA-F0-9]+$")
-          || userId == null || !userId.matches("^[a-fA-F0-9]+$")
-          || stopList == null || stopList.isEmpty()) {
-        return new ResponseEntity<>("Invalid input: routeId and userId must contain"
-              + " only alphanumeric characters, underscores, or hyphens. StopList cannot be empty.",
-                                    HttpStatus.BAD_REQUEST);
+      try {
+          // 1. Validate inputs: Check for null, empty values, and malformed stopList
+          if (routeId == null || !routeId.matches("^[a-fA-F0-9]+$") ||
+              userId == null || !userId.matches("^[a-fA-F0-9]+$") ||
+              stopList == null || stopList.isEmpty()) {
+              return new ResponseEntity<>("Invalid input: routeId and userId must contain only alphanumeric characters, underscores, or hyphens. StopList cannot be empty.",
+                                          HttpStatus.BAD_REQUEST);
+          }
+
+          // 2. Check if the annotation exists
+          boolean doesExist = (checkAnnos(routeId, userId).getStatusCode() == HttpStatus.OK);
+
+          // 3. Initialize DatabaseOperation
+          DatabaseOperation db = new DatabaseOperation(true, routeId, userId);
+
+          if (doesExist) {
+              // Edit existing annotation
+              String result = db.updateAnno(routeId, userId, stopList);
+              if ("Update success".equals(result)) {
+                  return new ResponseEntity<>(result, HttpStatus.OK);
+              } else {
+                  return new ResponseEntity<>("Failed to update annotation", HttpStatus.BAD_REQUEST);
+              }
+          } else {
+              // Create new annotation
+              String result = db.insertAnno(routeId, userId, stopList);
+              if ("Insert success".equals(result)) {
+                  return new ResponseEntity<>(result, HttpStatus.OK);
+              } else {
+                  return new ResponseEntity<>("Failed to create annotation", HttpStatus.BAD_REQUEST);
+              }
+          }
+      } catch (Exception e) {
+          return handleException(e);
       }
-
-      // 2. Check if the annotation exists
-      boolean doesExist = (checkAnnos(routeId, userId).getStatusCode() == HttpStatus.OK);
-
-      // 3. Initialize DatabaseOperation
-      DatabaseOperation db = new DatabaseOperation(true, routeId, userId);
-
-      if (doesExist) {
-        // Edit existing annotation
-        String result = db.updateAnno(routeId, userId, stopList);
-        if ("Update success".equals(result)) {
-          return new ResponseEntity<>(result, HttpStatus.OK);
-        } else {
-          return new ResponseEntity<>("Failed to update annotation", HttpStatus.BAD_REQUEST);
-        }
-      } else {
-        // Create new annotation
-        String result = db.insertAnno(routeId, userId, stopList);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-      }
-    } catch (Exception e) {
-      return handleException(e);
-    }
   }
 
 
   /**
    * Deletes an annotation document based on the provided routeId and userId.
    *
-   * @param routeId A {@code String} representing route's unique identifier.
-   * @param userId A {@code String} representing user's unique identifier.
-   * @return A {@code ResponseEntity} object containing either:
-   *         a success message with HTTP 200 status, 
-   *         NOT_FOUND if the annotation does not exist, 
-   *         or a BAD_REQUEST status if input validation fails.
+   * @param routeId A {@code String} representing the route's unique identifier.
+   * @param userId A {@code String} representing the user's unique identifier.
+   * @return A {@code ResponseEntity} object containing either a success message with HTTP 200 status, 
+   *         NOT_FOUND if the annotation does not exist, or a BAD_REQUEST status if input validation fails.
    */
   @DeleteMapping("/deleteAnno")
   public ResponseEntity<?> deleteAnnotation(
       @RequestParam("routeId") String routeId,
       @RequestParam("userId") String userId) {
     try {
-      // 1. Validate inputs: Ensure routeId and userId are not null, empty, or invalid characters
-      if (routeId == null || !routeId.matches("^[a-fA-F0-9]+$")
-          || userId == null || !userId.matches("^[a-fA-F0-9]+$")) {
-        return new ResponseEntity<>(
-            "Invalid input: routeId and userId must"
-                  + " contain only alphanumeric characters, underscores, or hyphens.",
-                  HttpStatus.BAD_REQUEST);
-      }
+        // 1. Validate inputs: Ensure routeId and userId are not null, empty, or contain invalid characters
+        if (routeId == null || !routeId.matches("^[a-fA-F0-9]+$") ||
+            userId == null || !userId.matches("^[a-fA-F0-9]+$")) {
+            return new ResponseEntity<>(
+                "Invalid input: routeId and userId must contain only alphanumeric characters, underscores, or hyphens.",
+                HttpStatus.BAD_REQUEST);
+        }
 
-      // 2. Proceed with deletion if inputs are valid
-      DatabaseOperation db = new DatabaseOperation(true, routeId, userId);
-      String result = db.deleteAnno(routeId, userId);
+        // 2. Proceed with deletion if inputs are valid
+        DatabaseOperation db = new DatabaseOperation(true, routeId, userId);
+        String result = db.deleteAnno(routeId, userId);
 
-      if ("Delete success".equals(result)) {
-        return new ResponseEntity<>(result, HttpStatus.OK);
-      } else if ("Annotation not found".equals(result)) {
-        return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
-      } else {
-        return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-      }
+        if ("Delete success".equals(result)) {
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else if ("Annotation not found".equals(result)) {
+            return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+        }
     } catch (Exception e) {
-      return handleException(e);
+        return handleException(e);
     }
   }
 
@@ -411,7 +412,7 @@ public class RouteController {
    * @return A {@code ResponseEntity} with an error message and NOT_FOUND status.
    */
   private ResponseEntity<?> handleException(Exception e) {
-    System.out.println(e.toString());
-    return new ResponseEntity<>("An Error has occurred", HttpStatus.NOT_FOUND);
+      System.out.println(e.toString());
+      return new ResponseEntity<>("An Error has occurred", HttpStatus.NOT_FOUND);
   }
 }

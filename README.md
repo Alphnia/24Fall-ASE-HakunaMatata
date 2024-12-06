@@ -207,15 +207,6 @@ This section describes the endpoints that our service provides, as well as their
 * Upon Success: Returns HTTP 200 status indicating the annotation has been successfully updated or created.
 * Upon Failure: Returns HTTP 400 status if an error occurs during the operation.
 
-#### GET /queryPhotoAnno
-* Retrieves the URL of a photo annotation from the database based on the provided routeId, userId, and address.
-* Requires routeId, userId, and address parameters.
-* Returns the URL of the annotation or an error message.
-* Upon Success: Returns HTTP 200 status with the URL of the photo annotation.
-* Upon Failure: Returns HTTP 404 status if no matching annotation is found.
-* On Invalid Input: Returns HTTP 400 status if routeId or userId contain invalid characters.
-* On Exception: Returns HTTP 500 status if an unexpected error occurs.
-
 #### DELETE /deleteAnno
 * Deletes an annotation document based on the provided routeId and userId.
 * Requires routeId and userId parameters.
@@ -233,14 +224,14 @@ Use the tool "checkstyle" to check the style of the code and generate style chec
 ```
 mvn checkstyle:check
 ```
-![style check terminal screenshot](./stylecheck.png)
+![WeChat7186f666dfcd0e8dd72e6ac1350cbf9b](https://github.com/user-attachments/assets/7abcaad5-96a2-422a-ab65-d6f67d2db30c)
 
 ## Branch Coverage Reporting
 Use JaCoCo to run unit tests and analyze branch coverage.
 ```
 mvn test jacoco:report
 ```
-![report screenshot](./jacoco-report.png)
+![WeChat4c418cd52c0e4d0fc25b5c9e1c71ed7d](https://github.com/user-attachments/assets/61226a5b-41f2-43a9-966d-26da09616752)
 
 ## Static Code Analysis Using PMD
 I used the QuickStart guide on https://pmd.github.io/

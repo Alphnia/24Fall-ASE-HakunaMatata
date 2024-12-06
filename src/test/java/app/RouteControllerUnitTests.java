@@ -2,9 +2,8 @@ package app;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +51,7 @@ public class RouteControllerUnitTests {
 
   @Test
   public void retrieveRouteExistsTest() {
-    String origin1 = "28-30 Jackson Ave,Long Island City,NY 11101";
+    String origin1="28-30 Jackson Ave,Long Island City,NY 11101";
     String destination1 = "116th and Broadway, New York, NY 10027";
     ResponseEntity<?> response = testRc.retrieveRoute(origin1, destination1);
     Document document = new Document("_id", new Document("$oid", "670edd4166fb37bbbabbe914"))
@@ -130,7 +129,7 @@ public class RouteControllerUnitTests {
   @Test
   public void testEditRoute_UpdateSuccess() {
     String routeId = "1";
-    String userId = "1";
+    String userId = "670c4dab7013573300601f64";
     // 假设记录已存在
     ResponseEntity<?> response = testRc.editRoute(routeId, userId, stopList);
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -143,16 +142,6 @@ public class RouteControllerUnitTests {
     List<Map<String, Object>> emptyStoplList = new ArrayList<Map<String, Object>>();
     ResponseEntity<?> response = testRc.editRoute(routeId, userId, emptyStoplList);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-  }
-
-  @Test
-  public void testEditRoute_InsertSuccess() {
-    String routeId = "7";
-    String userId = "670c4dab7013573300601f64";
-    // 假设记录已存在
-    ResponseEntity<?> response = testRc.editRoute(routeId, userId, stopList);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    testRc.deleteAnnotation(routeId, userId);
   }
 
   @Test
@@ -181,17 +170,12 @@ public class RouteControllerUnitTests {
   @Test
   public void testcheckAnno_ValidInput()  {
     String routeId = "1";
-    String userId = "1";
+    String userId = "670c4dab7013573300601f64";
     ResponseEntity<?> response = testRc.checkAnnos(routeId, userId);
     System.out.println(response.getBody());
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
     routeId = "5";
-    userId = "670c4dab7013573300601f64";
-    response = testRc.checkAnnos(routeId, userId);
-    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-
-    routeId = "456789";
     userId = "670c4dab7013573300601f64";
     response = testRc.checkAnnos(routeId, userId);
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -225,10 +209,9 @@ public class RouteControllerUnitTests {
   @Test
   public void testdeleteAnno_ValidInput() {
     String routeId = "1";
-    String userId = "1";
+    String userId = "670c4dab7013573300601f64";
     ResponseEntity<?> response = testRc.deleteAnnotation(routeId, userId);
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    testRc.editRoute(routeId, userId, stopList);
 
     routeId = "5";
     userId = "670c4dab7013573300601f64";
@@ -257,43 +240,7 @@ public class RouteControllerUnitTests {
     userId = null;
     response = testRc.deleteAnnotation(routeId, userId);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    
-  }
-
-  @Test
-  public void testqueryPhotoAnno() {
-    String routeId = "1";
-    String userId = "670c4dab7013573300601f64";
-    String addr = "&^*^%";
-    ResponseEntity<?> response = testRc.queryPhotoAnno(routeId, userId, addr);
-    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-
-    routeId = "3";
-    userId = "&*^*^%$";
-    response = testRc.queryPhotoAnno(routeId, userId, addr);
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    
-    routeId = "^*&^*^";
-    userId = "bob@example.com";
-    response = testRc.queryPhotoAnno(routeId, userId, addr);
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    
-    routeId = null;
-    userId = "bob@example.com";
-    response = testRc.queryPhotoAnno(routeId, userId, addr);
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    
-    routeId = "^*&^*^";
-    userId = null;
-    response = testRc.queryPhotoAnno(routeId, userId, addr);
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    
-    routeId = "1";
-    userId = "67130280c2739561fe4a2b55";
-    addr = "Penn Station";
-    response = testRc.queryPhotoAnno(routeId, userId, addr);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    
+      
   }
 
   /** The test course instance used for testing. */
