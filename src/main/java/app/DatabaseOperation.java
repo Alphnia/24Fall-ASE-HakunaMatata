@@ -11,7 +11,8 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
-
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +27,6 @@ import org.springframework.http.ResponseEntity;
  * database operation for annotation.
  */
 public class DatabaseOperation {
-
   /**
    * Constructor that initializes a DatabaseOperation instance with a MongoDB connection
    * and retrieves the "Route" and "Annotation" collections based on route Id and user Id.
@@ -38,7 +38,7 @@ public class DatabaseOperation {
    */
   public DatabaseOperation(Boolean flag, String routeId, String userId) {
     String connectionString = 
-    "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
+        "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
         + "?retryWrites=true&w=majority&appName=Cluster4156&tsl=true";
     MongoClient mongoClient = MongoClients.create(connectionString);
     this.database = mongoClient.getDatabase("Hkunamatata_DB");
@@ -54,7 +54,7 @@ public class DatabaseOperation {
   */
   public DatabaseOperation(String origin, String destination) {
     String connectionString = 
-    "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
+        "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
         + "?retryWrites=true&w=majority&appName=Cluster4156&tsl=true";
     MongoClient mongoClient = MongoClients.create(connectionString);
     this.database = mongoClient.getDatabase("Hkunamatata_DB");
@@ -68,13 +68,13 @@ public class DatabaseOperation {
   */
   public DatabaseOperation(String collection) {
     String connectionString = 
-    "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
+        "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
         + "?retryWrites=true&w=majority&appName=Cluster4156&tsl=true";
     MongoClient mongoClient = MongoClients.create(connectionString);
     this.database = mongoClient.getDatabase("Hkunamatata_DB");
     this.collection = database.getCollection(collection);
   }
-
+  
   /**
   * findDocumentbyOriDes function.
   *
@@ -105,7 +105,7 @@ public class DatabaseOperation {
   * 
   */
   public String getUserIdByAnnoId(int annoId) {
-    try{
+    try {
       Document query = new Document("AnnoID", annoId);
       FindIterable<Document> results = this.collection.find(query).limit(1);
       MongoCursor<Document> cursor = results.iterator();
@@ -157,15 +157,48 @@ public class DatabaseOperation {
       List<Double> location = Arrays.asList(latitude, longitude);
       Document doc = new Document("UserID", userId)
           .append("Location", location)
-          .append("timestamp", timestamp);
+          .append("Timestamp", timestamp);
       this.collection.insertOne(doc);
       return new ResponseEntity<>("Success", HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>("Error in creating doc", HttpStatus.NOT_FOUND);
     }
-    
 
   }
+
+  /**
+   * Get the latest location of user A.
+   *
+   *
+   */
+  public Map<String, Object> getLatestLocation(String userId) {
+    try {
+      Document query = new Document("UserID", userId); // Fix case sensitivity
+      Document sort = new Document("Timestamp", -1); // Fix case sensitivity
+      Document result = collection.find(query).sort(sort).first();
+
+      if (result != null) {
+        List<Double> locationArray = result.getList("Location", Double.class);
+        double latitude = locationArray.get(0);
+        double longitude = locationArray.get(1);
+
+        Instant timestamp = result.getDate("Timestamp").toInstant();
+        String formattedTimestamp = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+            .withZone(ZoneId.systemDefault())
+            .format(timestamp);
+
+        return Map.of(
+            "latitude", latitude,
+            "longitude", longitude,
+            "timestamp", formattedTimestamp
+        );
+      }
+      return null;
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to retrieve location data: " + e.getMessage());
+    }
+  }
+
 
   /**
   * deleteDocument function.
@@ -196,7 +229,8 @@ public class DatabaseOperation {
    */
   public String findRoutebyIds(String routeId) {
     try {
-      Document query = new Document("RouteID", routeId);
+      int routeIdInt = Integer.parseInt(routeId);
+      Document query = new Document("RouteID", routeIdInt);
       FindIterable<Document> results = this.collection.find(query).limit(1);
       Document document = results.first();
       if (document != null) {

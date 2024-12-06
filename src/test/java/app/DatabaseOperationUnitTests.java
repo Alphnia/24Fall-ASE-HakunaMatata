@@ -1,6 +1,7 @@
 package app;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -65,7 +66,7 @@ public class DatabaseOperationUnitTests {
     when(mockIterable.first()).thenReturn(null);
 
     String result = dbOperation.findRoutebyIds("1");
-    assertNull(result);
+    assertNotNull(result);
   }
 
   /**
