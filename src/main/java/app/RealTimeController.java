@@ -1,16 +1,20 @@
 package app;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 
 /**
@@ -20,13 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/RealTime")
 public class RealTimeController {
-  
   /**
    * Update location returned from the client side.
    *
-   * @param latitude The latitude of the User sharing location.
-   * 
-   * @param longitude The longitude of the User sharing location.
+   * @param location The location of the User sharing location.
    * 
    * @param annoId The annotation Id of the route User shared.
    * 
@@ -34,23 +35,27 @@ public class RealTimeController {
    *         A {@code ResponseEntity} with success message and 200 status.
    */
   @PutMapping("/update_location")
-  public ResponseEntity<?> updateLocation(@RequestParam("latitude") Double latitude,
-      @RequestParam("longitude") Double longitude,
+  public ResponseEntity<?> updateLocation(@RequestBody Location location,
       @RequestParam("annoId") String annoId) {
     try {
+      Double latitude = location.getLatitude();
+      Double longitude = location.getLongitude();
       DatabaseOperation database = new DatabaseOperation("Annotation");
       String userId = database.getUserIdByAnnoId(Integer.parseInt(annoId));
       if (userId == null) {
         return new ResponseEntity<>("Failed to update location", HttpStatus.BAD_REQUEST);
       }
       Instant.now();
-      DateTimeFormatter formatter = DateTimeFormatter
-            .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-            .withZone(ZoneId.of("UTC"));
-      DatabaseOperation databaseTrack = new DatabaseOperation("track_location");
-      databaseTrack.createDocument_track(userId, latitude, longitude, formatter);
-
-      return new ResponseEntity<>("Successfully updated", HttpStatus.OK);
+      OffsetDateTime currentTime = OffsetDateTime.now();
+      String formattedTime = currentTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+      DatabaseOperation databasetrack = new DatabaseOperation("track_location");
+      ResponseEntity<?> response = databasetrack.createDocument_track(userId, 
+          latitude, longitude, formattedTime);
+      if (response.getStatusCode() == HttpStatus.OK) {
+        return new ResponseEntity<>("Successfully updated", HttpStatus.OK);
+      } else {
+        return new ResponseEntity<>("Failed to insert database", HttpStatus.BAD_REQUEST);
+      }
     } catch (Exception e) {
       return handleException(e);
     }

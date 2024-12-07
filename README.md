@@ -223,6 +223,20 @@ This section describes the endpoints that our service provides, as well as their
 * Upon Success: Returns HTTP 200 status indicating the annotation has been successfully deleted.
 * Upon Failure: Returns HTTP 404 status indicating the annotation was not found, or HTTP 400 status indicating an error occurred during the operation.
 
+#### PUT /RealTime/update_location
+* Update location returned from the client side.
+* Requires a body from client side and a parameter annoId.
+* Returns information on the update result.
+* Upon Success: Returns HTTP 200 status with the corresponding information.
+* Upon Failure: Returns HTTP 404 status if insertion failed or no matching annotation or user found.
+
+#### GET /RealTime/trackLocation
+* Generate a link for another user to track one user's location.
+* Requires a parameter userId.
+* Returns information on the validation of user's location data.
+* Upon Success: Returns HTTP 200 status.
+* Upon Failure: Returns HTTP 404 status if the location data is null. 
+
 ## APIs Test using Postman
 Make API calls through Postman: https:// </br>
 For local machine: http:127.0.0.1:8080/endpoint?arg=value </br>
