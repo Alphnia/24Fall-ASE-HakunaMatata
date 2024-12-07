@@ -1,6 +1,7 @@
 package app;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -37,25 +38,28 @@ public class RealTimeController {
    */
   @PutMapping("/update_location")
   public ResponseEntity<?> updateLocation(@RequestBody Location location,
-      @RequestParam("annoId") String annoId) {
-    try {
-      System.out.println("ashley 1 ");
-      DatabaseOperation database = new DatabaseOperation("Annotation");
-      String userId = database.getUserIdByAnnoId(Integer.parseInt(annoId));
-      if (userId == null) {
-        return new ResponseEntity<>("Failed to update location", HttpStatus.BAD_REQUEST);
+  @RequestParam("annoId") String annoId){
+      try {
+        Double latitude = location.getLatitude();
+        Double longitude = location.getLongitude();
+        DatabaseOperation database = new DatabaseOperation("Annotation");
+        String userId = database.getUserIdByAnnoId(Integer.parseInt(annoId));
+        if (userId == null) {
+          return new ResponseEntity<>("Failed to update location", HttpStatus.BAD_REQUEST);
+        }
+        Instant.now();
+        OffsetDateTime currentTime = OffsetDateTime.now();
+        String formattedTime = currentTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        DatabaseOperation database_track = new DatabaseOperation("track_location");
+        ResponseEntity<?> response = database_track.createDocument_track(userId, latitude, longitude, formattedTime);
+        if(response.getStatusCode() == HttpStatus.OK){
+          return new ResponseEntity<>("Successfully updated",HttpStatus.OK);
+        } else {
+          return new ResponseEntity<>("Failed to insert database", HttpStatus.BAD_REQUEST);
+        }
+      } catch (Exception e) {
+        return handleException(e);
       }
-      Instant.now();
-      DateTimeFormatter formatter = DateTimeFormatter
-            .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-            .withZone(ZoneId.of("UTC"));
-      DatabaseOperation databaseTrack = new DatabaseOperation("track_location");
-      databaseTrack.createDocument_track(userId, location.getLatitude(), location.getLongitude(), formatter);
-      System.out.println("hi ashley: ");
-      return new ResponseEntity<>("Successfully updated", HttpStatus.OK);
-    } catch (Exception e) {
-      return handleException(e);
-    }
   }
 
   /**

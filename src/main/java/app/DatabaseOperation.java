@@ -152,14 +152,13 @@ public class DatabaseOperation {
   * 
   */
   public ResponseEntity<?> createDocument_track(String userId, Double latitude,
-      Double longitude, DateTimeFormatter timestamp) {
+      Double longitude, String timestamp) {
     try {
       List<Double> location = Arrays.asList(latitude, longitude);
       Document doc = new Document("UserID", userId)
           .append("Location", location)
-          .append("timestamp", timestamp);
+          .append("Timestamp", timestamp);
       this.collection.insertOne(doc);
-      System.out.println("hi ashley: ");
       return new ResponseEntity<>("Success", HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>("Error in creating doc", HttpStatus.NOT_FOUND);
