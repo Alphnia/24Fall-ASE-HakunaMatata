@@ -27,9 +27,7 @@ public class RealTimeController {
   /**
    * Update location returned from the client side.
    *
-   * @param latitude The latitude of the User sharing location.
-   * 
-   * @param longitude The longitude of the User sharing location.
+   * @param location The location of the User sharing location.
    * 
    * @param annoId The annotation Id of the route User shared.
    * 
@@ -38,28 +36,29 @@ public class RealTimeController {
    */
   @PutMapping("/update_location")
   public ResponseEntity<?> updateLocation(@RequestBody Location location,
-  @RequestParam("annoId") String annoId){
-      try {
-        Double latitude = location.getLatitude();
-        Double longitude = location.getLongitude();
-        DatabaseOperation database = new DatabaseOperation("Annotation");
-        String userId = database.getUserIdByAnnoId(Integer.parseInt(annoId));
-        if (userId == null) {
-          return new ResponseEntity<>("Failed to update location", HttpStatus.BAD_REQUEST);
-        }
-        Instant.now();
-        OffsetDateTime currentTime = OffsetDateTime.now();
-        String formattedTime = currentTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        DatabaseOperation database_track = new DatabaseOperation("track_location");
-        ResponseEntity<?> response = database_track.createDocument_track(userId, latitude, longitude, formattedTime);
-        if(response.getStatusCode() == HttpStatus.OK){
-          return new ResponseEntity<>("Successfully updated",HttpStatus.OK);
-        } else {
-          return new ResponseEntity<>("Failed to insert database", HttpStatus.BAD_REQUEST);
-        }
-      } catch (Exception e) {
-        return handleException(e);
+      @RequestParam("annoId") String annoId) {
+    try {
+      Double latitude = location.getLatitude();
+      Double longitude = location.getLongitude();
+      DatabaseOperation database = new DatabaseOperation("Annotation");
+      String userId = database.getUserIdByAnnoId(Integer.parseInt(annoId));
+      if (userId == null) {
+        return new ResponseEntity<>("Failed to update location", HttpStatus.BAD_REQUEST);
       }
+      Instant.now();
+      OffsetDateTime currentTime = OffsetDateTime.now();
+      String formattedTime = currentTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+      DatabaseOperation databasetrack = new DatabaseOperation("track_location");
+      ResponseEntity<?> response = databasetrack.createDocument_track(userId, 
+          latitude, longitude, formattedTime);
+      if (response.getStatusCode() == HttpStatus.OK) {
+        return new ResponseEntity<>("Successfully updated", HttpStatus.OK);
+      } else {
+        return new ResponseEntity<>("Failed to insert database", HttpStatus.BAD_REQUEST);
+      }
+    } catch (Exception e) {
+      return handleException(e);
+    }
   }
 
   /**

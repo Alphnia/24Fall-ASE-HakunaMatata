@@ -1,23 +1,26 @@
 package app;
 
+/**
+ * this class is for Location type data.
+*/
 public class Location {
   private Double latitude;
   private Double longitude;
 
   // Getters and Setters
   public Double getLatitude() {
-      return latitude;
+    return latitude;
   }
 
   public void setLatitude(Double latitude) {
-      this.latitude = latitude;
+    this.latitude = latitude;
   }
 
   public Double getLongitude() {
-      return longitude;
+    return longitude;
   }
 
   public void setLongitude(Double longitude) {
-      this.longitude = longitude;
+    this.longitude = longitude;
   }
 }
