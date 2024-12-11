@@ -18,10 +18,25 @@ function error(err) {
 }
 
 let watchId;
+let intervalId;
+
+function fetchPosition() {
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      console.log("Position updated:", position.coords);
+      fetch
+    },
+    (error) => {
+      console.error("Error fetching position:", error);
+    },
+    options
+  );
+}
 
 export const startShareLocation = () => {
   if (navigator.geolocation) {
-    watchId = navigator.geolocation.watchPosition(success, error, options);
+    // watchId = navigator.geolocation.watchPosition(success, error, options);
+    intervalId = setInterval(fetchPosition, 5000);
     console.log("Started watching position.");
   } else {
     console.error("Geolocation is not supported by your browser.");
@@ -32,6 +47,10 @@ export const stopShareLocation = () => {
   if (watchId !== undefined) {
     navigator.geolocation.clearWatch(watchId);
     console.log("Stopped watching position.");
+  } else if (intervalId !== undefined) {
+    clearInterval(intervalId);
+    intervalId = null; // Reset the interval ID
+    console.log("Stopped sharing location.");
   } else {
     console.error("No position tracking to stop.");
   }
