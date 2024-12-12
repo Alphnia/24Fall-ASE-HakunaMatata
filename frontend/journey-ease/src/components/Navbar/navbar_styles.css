@@ -1,0 +1,111 @@
+/* CSS for Navbar Styling */
+
+.nav {
+  background: #bee9e8; /* Updated modern blue background */
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 50px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 12;
+  font-family: 'Roboto', sans-serif; /* Updated font style */
+  color: #1b4965; /* Updated font color */
+}
+
+.nav-link {
+  color: #1b4965; /* Updated white text for links */
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 0 15px;
+  height: 100%;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-link.active {
+  color: #1b4965; /* Highlight active links in amber */
+}
+
+.nav-link:hover {
+  color: #1b4965; /* Same hover effect as active links */
+}
+
+.bars {
+  display: none;
+  color: #FAFAFA;
+}
+
+@media screen and (max-width: 768px) {
+  .bars {
+      display: block;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 1.8rem;
+      cursor: pointer;
+  }
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .nav-menu {
+      display: none;
+  }
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+@media screen and (max-width: 768px) {
+  .nav-btn {
+      display: none;
+  }
+}
+
+.nav-btn-link {
+  border-radius: 25px;
+  background: #62b6cb; /* Amber background for buttons */
+  padding: 10px 20px;
+  color: #212121; /* Black text for contrast */
+  outline: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.nav-btn-link:hover {
+  background: #cae9ff; /* Darker amber on hover */
+  color: #FAFAFA; /* White text on hover */
+}
+
+.logout-btn-link {
+  border-radius: 25px;
+  background: #5fa8d3; /* Red for logout */
+  padding: 10px 20px;
+  color: #FAFAFA; /* White text */
+  outline: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.logout-btn-link:hover {
+  background: #5fa8d3; /* Slightly darker red on hover */
+}
