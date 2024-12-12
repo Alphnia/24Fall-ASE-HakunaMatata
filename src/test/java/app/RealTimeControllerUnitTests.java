@@ -31,7 +31,10 @@ public class RealTimeControllerUnitTests {
     Double latitude = 40.762569;
     Double longitude = -73.975731;
     String annoId = "19";
-    ResponseEntity<?> response = testRTC.updateLocation(latitude, longitude, annoId);
+    Location location = new Location();
+    location.setLatitude(latitude);
+    location.setLongitude(longitude);
+    ResponseEntity<?> response = testRTC.updateLocation(location, annoId);
     String expectedResult = "Successfully updated";
     assertEquals(expectedResult, response.getBody());
   }
@@ -41,7 +44,10 @@ public class RealTimeControllerUnitTests {
     Double latitude = 40.762569;
     Double longitude = -73.975731;
     String annoId = "100";
-    ResponseEntity<?> response = testRTC.updateLocation(latitude, longitude, annoId);
+    Location location = new Location();
+    location.setLatitude(latitude);
+    location.setLongitude(longitude);
+    ResponseEntity<?> response = testRTC.updateLocation(location, annoId);
     String expectedResult = "Failed to update location";
     assertEquals(expectedResult, response.getBody());
   }
