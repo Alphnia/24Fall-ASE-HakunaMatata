@@ -7,51 +7,72 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import { styled } from '@mui/system';
 import Button from '@mui/material/Button';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
-import { Stepper, Step, StepLabel, Typography, Box } from '@mui/material';
+import { Stepper, Step, StepLabel, Typography, Box, nativeSelectClasses } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ShareLocaion from "../ShareLocation";
+import { useNavigate } from 'react-router-dom';
 
 const FormGrid = styled(Grid)(() => ({
   display: 'flex',
   flexDirection: 'column',
 }));
 
-const extractStops = (obj) => {
-  const stopsDict = {};
+// const extractStops = (obj) => {
+//   const stopsDict = {};
 
-  for (const key in obj) {
-    if (typeof obj[key] === 'object' && obj[key] !== null) {
-      const nestedStops = extractStops(obj[key]);
-      Object.assign(stopsDict, nestedStops);
-    }
+//   for (const key in obj) {
+//     console.log(key);
+//     if (typeof obj[key] === 'object' && obj[key] !== null) {
+//       const nestedStops = extractStops(obj[key]);
+//       Object.assign(stopsDict, nestedStops);
+//     }
 
-    if (key.toLowerCase().includes('stop') && obj[key].name) {
-      stopsDict[key] = obj[key].name;
-    }
+//     // if (key.toLowerCase().includes('stop') && obj[key].name) {
+//     //   stopsDict[key] = obj[key].name;
+//     // }
+//     if (key.toLowerCase().includes('arrivalStop') && obj[key].name) {
+//       stopsDict[key] = obj[key].name;
+//     }
 
-    if (key === 'headsign' && obj[key]) {
-      stopsDict[key] = obj[key];
-    }
+//     if (key === 'headsign' && obj[key]) {
+//       stopsDict[key] = obj[key];
+//     }
 
-    if (key === 'transitLine' && obj[key].name) {
-      stopsDict['transitLineName'] = obj[key].name;
-    }
+//     if (key === 'transitLine' && obj[key].name) {
+//       stopsDict['transitLineName'] = obj[key].name;
+//     }
+//   }
+
+//   return stopsDict;
+// };
+function extractStops(transitDetails) {
+  if (!transitDetails || !transitDetails.stopDetails || !transitDetails.transitLine) {
+      throw new Error("Invalid transit details object");
   }
 
-  return stopsDict;
-};
+  return {
+      arrivalStop: transitDetails.stopDetails.arrivalStop?.name || "Unknown",
+      departureStop: transitDetails.stopDetails.departureStop?.name || "Unknown",
+      headsign: transitDetails.headsign || "Unknown",
+      stopCount: transitDetails.stopCount || 0,
+      transitLine: transitDetails.transitLine || {}
+  };
+}
 
 
 const RouteDisplay = () => {
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
-  const [stopData, setstopData] = useState(null);
+  // const [stopData, setstopData] = useState(null);
   const [message, setmessage] = useState(null);
   const [trainData, settrainData] = useState(null);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const [stopDatajson, setTextDatajson] = useState('');
 
   const handleSearch = async () => {
     try {
@@ -61,33 +82,42 @@ const RouteDisplay = () => {
         throw new Error('Network response was not ok');
       }
       const textData = await response.text();
+      console.log(textData);
       let data;
       try {
         data = JSON.parse(textData);
+        console.log(data["legs"][0]["steps"]);
+        setTextDatajson(data);
       } catch (error) {
         data = textData;
       }
       if (typeof data === 'object') {
         let train = [];
-        console.log(data.length);
-        for (let i = 0; i < data.length; i++) {
-          console.log(i)
-          data[i] = JSON.parse(data[i]);
-          const stops = extractStops(data[i]);
+        let data2 = data["legs"][0]["steps"];
+        // console.log(data2[0].transitDetails);
+        for (let i = 0; i < data2.length; i++) {
+          console.log(data2[i].transitDetails);
+          const stops = extractStops(data2[i].transitDetails);
+          console.log(stops);
           train.push(stops);
         }
         console.log(train)
         settrainData(train);
-        setstopData(stops);
+        // setstopData(stops);
       } else{
         setmessage(data)
       }
       setError(null); // Clear any previous errors
     } catch (err) {
       setError(err.message);
-      setstopData(null); // Clear previous route data
+      // setstopData(null); // Clear previous route data
     }
   };
+
+  const handleAnnotate = () => {
+    const stopInfo = {trainData: trainData, stopDatajson: stopDatajson};
+    navigate('/Annotations', {state: stopInfo});
+  }
 // function RouteDisplay(props) {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', width: '100%' }}>
@@ -143,7 +173,7 @@ const RouteDisplay = () => {
         trainData && (
             <div>
               {trainData.map((stops, trainIndex) => (
-                  <Box key={trainIndex} sx={{ marginBottom: 4 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px' }}>
                     <Typography variant="h6" style={{ fontSize: '1.5em', color: '#1b4965' }}>
                       Train {trainIndex + 1} Stop Details:
                     </Typography>
@@ -162,16 +192,22 @@ const RouteDisplay = () => {
                           )
                         ))}
                       </Stepper>
+                      
                     ) : (
                       <Typography variant="body1" style={{ color: '#1b4965', marginTop: '16px' }}>
                         No stops available.
                       </Typography>
                     )}
+                    <Box sx={{ display: 'flex', flexDirection: 'column', marginLeft: '8px', color: '#1b4965' }}>
+                      <span>{stops.headsign}</span>
+                      <span>{stops.transitLine?.name}</span>
+                    </Box>
                     <Button
                       variant="contained"
-                      sx={{ marginTop: 2, textTransform: 'none', backgroundColor: '#bee9e8', color: '#1b4965' }}
+                      sx={{ marginLeft: 2, textTransform: 'none', backgroundColor: '#bee9e8', color: '#1b4965' }}
+                      onClick={handleAnnotate}
                     >
-                      Add an Annotation
+                      Edit Annotation
                     </Button>
                   </Box>
                 ))}
