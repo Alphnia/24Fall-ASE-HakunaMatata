@@ -34,7 +34,7 @@ function SignUpForm() {
         if (validateForm()) {
           console.log('Form Submitted', formData);
           const formDataJson = JSON.stringify(formData);
-          fetch(globalVal.userProfileUrl+ '/signup', {
+          fetch("http://localhost:8080/register", {
             method: "POST",
             headers: {
               "Content-Type": "application/json", 

@@ -13,9 +13,9 @@ import java.util.Set;
 *
 * 
 */
-public class ReadJson {
+public class ReadJSON {
 
-  public ReadJson(String jsonString) {
+  public ReadJSON(String jsonString) {
     this.jsonString = jsonString;
   }
 

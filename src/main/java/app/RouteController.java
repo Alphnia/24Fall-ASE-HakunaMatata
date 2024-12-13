@@ -100,7 +100,7 @@ public class RouteController {
           if (googleResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
             return new ResponseEntity<>("Address not found.", HttpStatus.NOT_FOUND);
           }
-          ReadJson jsonResponse = new ReadJson(googleResponse.getBody());
+          ReadJSON jsonResponse = new ReadJSON(googleResponse.getBody());
           String[] stopList = jsonResponse.getContent();
           
           // JsonObject rawJsonToy = new JsonObject();
