@@ -80,7 +80,7 @@ public class DatabaseOperation {
   *
   * 
   */
-  public String findDocumentbyOriDes(String origin, String destination) {
+  public Document findDocumentbyOriDes(String origin, String destination) {
     try {
       List<String> orides = Arrays.asList(origin, destination);
       Document document = new Document("OriDes", orides);
@@ -88,12 +88,12 @@ public class DatabaseOperation {
       MongoCursor<Document> cursor = results.iterator();
       if (cursor.hasNext()) {
         Document doc = cursor.next();
-        return doc.toJson();
+        return doc;
       } else {
         return null;
       }
     } catch (Exception e) {
-      return "An Error has occurred";
+      return null;
     }
     
 

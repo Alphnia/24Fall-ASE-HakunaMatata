@@ -84,8 +84,9 @@ public class RouteController {
       doesRouteExists = doesRouteExists(origin, destination).getStatusCode() == HttpStatus.OK;
       if (doesRouteExists) {
         DatabaseOperation database = new DatabaseOperation(origin, destination);
-        String document = database.findDocumentbyOriDes(origin, destination);
-        return new ResponseEntity<>(document, HttpStatus.OK);
+        Document document = database.findDocumentbyOriDes(origin, destination);
+        // System.out.println("Type of first stoplist: " + document.getList("Stoplist", Object.class).get(0).getClass().getName());
+        return new ResponseEntity<>(document.getList("Stoplist", Object.class).get(0), HttpStatus.OK);
       } else {
         if (origin != null && origin.matches("^[a-zA-Z0-9 .,-]+$")
             && destination != null && destination.matches("^[a-zA-Z0-9 .,-]+$")) {
@@ -105,7 +106,7 @@ public class RouteController {
           // JsonObject rawJsonToy = new JsonObject();
           String rawJsonToy = "";
           createRoute(rawJsonToy, origin, destination, stopList, stopList);
-          return new ResponseEntity<>("Successfully Created!", HttpStatus.OK);
+          return new ResponseEntity<>("No Record Found. Successfully Created!", HttpStatus.OK);
         } else {
           return new ResponseEntity<>("Invalid Inputs!", HttpStatus.BAD_REQUEST);
         }
@@ -135,7 +136,7 @@ public class RouteController {
       if (origin != null && origin.matches("^[a-zA-Z0-9 ,.-]+$")
           && destination != null && destination.matches("^[a-zA-Z0-9 ,.-]+$")) {
         DatabaseOperation database = new DatabaseOperation(origin, destination);
-        String document = database.findDocumentbyOriDes(origin, destination);
+        Document document = database.findDocumentbyOriDes(origin, destination);
         if (document != null) {
           return new ResponseEntity<>(HttpStatus.OK);
         } else {
