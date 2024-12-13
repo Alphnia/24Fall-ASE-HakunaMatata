@@ -7,12 +7,14 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import { styled } from '@mui/system';
 import Button from '@mui/material/Button';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
-import { Stepper, Step, StepLabel, Typography, Box } from '@mui/material';
+import { Stepper, Step, StepLabel, Typography, Box, nativeSelectClasses } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ShareLocaion from "../ShareLocation";
+import { useNavigate } from 'react-router-dom';
+import myData from './myData.json';
 
 const FormGrid = styled(Grid)(() => ({
   display: 'flex',
@@ -41,6 +43,9 @@ const RouteDisplay = () => {
   const [stopData, setstopData] = useState(null);
   const [message, setmessage] = useState(null);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const [stopDatajson, setTextDatajson] = useState('');
 
   const handleSearch = async () => {
     try {
@@ -54,6 +59,7 @@ const RouteDisplay = () => {
       let data;
       try {
         data = JSON.parse(textData);
+        setTextDatajson(data);
       } catch (error) {
         data = textData;
       }
@@ -70,6 +76,11 @@ const RouteDisplay = () => {
       setstopData(null); // Clear previous route data
     }
   };
+
+  const handleAnnotate = () => {
+    const stopInfo = {stopData: stopData, stopDatajson: stopDatajson};
+    navigate('/Annotations', {state: stopInfo});
+  }
 // function RouteDisplay(props) {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', width: '100%' }}>
@@ -142,8 +153,9 @@ const RouteDisplay = () => {
                   <Button 
                     variant="contained" 
                     sx={{ marginLeft: 2, textTransform: 'none', backgroundColor: '#bee9e8',color: '#1b4965' }}
+                    onClick={handleAnnotate}
                   >
-                    Add an Annotation
+                    Add Annotations
                   </Button>
                 </Box>
               </Box>
