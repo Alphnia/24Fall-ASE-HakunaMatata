@@ -14,43 +14,59 @@ import ListItemText from '@mui/material/ListItemText';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ShareLocaion from "../ShareLocation";
 import { useNavigate } from 'react-router-dom';
-import myData from './myData.json';
 
 const FormGrid = styled(Grid)(() => ({
   display: 'flex',
   flexDirection: 'column',
 }));
 
-const extractStops = (obj) => {
-  const stopsDict = {};
+// const extractStops = (obj) => {
+//   const stopsDict = {};
 
-  for (const key in obj) {
-    if (typeof obj[key] === 'object' && obj[key] !== null) {
-      const nestedStops = extractStops(obj[key]);
-      Object.assign(stopsDict, nestedStops);
-    }
+//   for (const key in obj) {
+//     console.log(key);
+//     if (typeof obj[key] === 'object' && obj[key] !== null) {
+//       const nestedStops = extractStops(obj[key]);
+//       Object.assign(stopsDict, nestedStops);
+//     }
 
-    if (key.toLowerCase().includes('stop') && obj[key].name) {
-      stopsDict[key] = obj[key].name;
-    }
+//     // if (key.toLowerCase().includes('stop') && obj[key].name) {
+//     //   stopsDict[key] = obj[key].name;
+//     // }
+//     if (key.toLowerCase().includes('arrivalStop') && obj[key].name) {
+//       stopsDict[key] = obj[key].name;
+//     }
 
-    if (key === 'headsign' && obj[key]) {
-      stopsDict[key] = obj[key];
-    }
+//     if (key === 'headsign' && obj[key]) {
+//       stopsDict[key] = obj[key];
+//     }
 
-    if (key === 'transitLine' && obj[key].name) {
-      stopsDict['transitLineName'] = obj[key].name;
-    }
+//     if (key === 'transitLine' && obj[key].name) {
+//       stopsDict['transitLineName'] = obj[key].name;
+//     }
+//   }
+
+//   return stopsDict;
+// };
+function extractStops(transitDetails) {
+  if (!transitDetails || !transitDetails.stopDetails || !transitDetails.transitLine) {
+      throw new Error("Invalid transit details object");
   }
 
-  return stopsDict;
-};
+  return {
+      arrivalStop: transitDetails.stopDetails.arrivalStop?.name || "Unknown",
+      departureStop: transitDetails.stopDetails.departureStop?.name || "Unknown",
+      headsign: transitDetails.headsign || "Unknown",
+      stopCount: transitDetails.stopCount || 0,
+      transitLine: transitDetails.transitLine || {}
+  };
+}
 
 
 const RouteDisplay = () => {
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
-  const [stopData, setstopData] = useState(null);
+  // const [stopData, setstopData] = useState(null);
   const [message, setmessage] = useState(null);
   const [trainData, settrainData] = useState(null);
   const [error, setError] = useState(null);
@@ -66,37 +82,40 @@ const RouteDisplay = () => {
         throw new Error('Network response was not ok');
       }
       const textData = await response.text();
+      console.log(textData);
       let data;
       try {
         data = JSON.parse(textData);
+        console.log(data["legs"][0]["steps"]);
         setTextDatajson(data);
       } catch (error) {
         data = textData;
       }
       if (typeof data === 'object') {
         let train = [];
-        console.log(data.length);
-        for (let i = 0; i < data.length; i++) {
-          console.log(i)
-          data[i] = JSON.parse(data[i]);
-          const stops = extractStops(data[i]);
+        let data2 = data["legs"][0]["steps"];
+        // console.log(data2[0].transitDetails);
+        for (let i = 0; i < data2.length; i++) {
+          console.log(data2[i].transitDetails);
+          const stops = extractStops(data2[i].transitDetails);
+          console.log(stops);
           train.push(stops);
         }
         console.log(train)
         settrainData(train);
-        setstopData(stops);
+        // setstopData(stops);
       } else{
         setmessage(data)
       }
       setError(null); // Clear any previous errors
     } catch (err) {
       setError(err.message);
-      setstopData(null); // Clear previous route data
+      // setstopData(null); // Clear previous route data
     }
   };
 
   const handleAnnotate = () => {
-    const stopInfo = {stopData: stopData, stopDatajson: stopDatajson};
+    const stopInfo = {trainData: trainData, stopDatajson: stopDatajson};
     navigate('/Annotations', {state: stopInfo});
   }
 // function RouteDisplay(props) {
@@ -181,8 +200,9 @@ const RouteDisplay = () => {
                     <Button
                       variant="contained"
                       sx={{ marginTop: 2, textTransform: 'none', backgroundColor: '#bee9e8', color: '#1b4965' }}
+                      onClick={handleAnnotate}
                     >
-                      Add an Annotation
+                      Edit Annotation
                     </Button>
                   </Box>
                 ))}
