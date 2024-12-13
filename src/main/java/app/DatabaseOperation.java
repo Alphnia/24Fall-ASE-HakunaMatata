@@ -12,6 +12,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -181,11 +182,12 @@ public class DatabaseOperation {
         List<Double> locationArray = result.getList("Location", Double.class);
         double latitude = locationArray.get(0);
         double longitude = locationArray.get(1);
-
-        Instant timestamp = result.getDate("Timestamp").toInstant();
+        String timestamp = result.getString("Timestamp");
+        OffsetDateTime offsetDateTime = OffsetDateTime.parse(timestamp, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        Instant instant = offsetDateTime.toInstant();
         String formattedTimestamp = DateTimeFormatter.ISO_OFFSET_DATE_TIME
             .withZone(ZoneId.systemDefault())
-            .format(timestamp);
+            .format(instant);
 
         return Map.of(
             "latitude", latitude,
