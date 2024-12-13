@@ -67,13 +67,14 @@ const Annotations = () => {
       
       { 
         trainData && (
-            <div>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 5 }}>
+            
               {trainData.map((stops, trainIndex) => (
                   <Box key={trainIndex} sx={{ marginBottom: 4 }}>
                     <Typography variant="h6" style={{ fontSize: '1.5em', color: '#1b4965' }}>
                       Train {trainIndex + 1} Stop Details:
                     </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 4 }}> 
+                    <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 0 }}> 
                       <Stepper activeStep={0} orientation="vertical">
                         {['arrivalStop', 'departureStop'].reverse().map((key, index) => (
                           stops[key] && (
@@ -107,7 +108,8 @@ const Annotations = () => {
               >
                 Save Annotations
               </Button>
-            </div>
+              </Box>
+            
           
       )}
     </div>

@@ -178,7 +178,7 @@ const RouteDisplay = () => {
         trainData && (
             <div>
               {trainData.map((stops, trainIndex) => (
-                  <Box key={trainIndex} sx={{ marginBottom: 4 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px' }}>
                     <Typography variant="h6" style={{ fontSize: '1.5em', color: '#1b4965' }}>
                       Train {trainIndex + 1} Stop Details:
                     </Typography>
@@ -198,15 +198,20 @@ const RouteDisplay = () => {
                           )
                         ))}
                       </Stepper>
+                      
                     ) : (
                       <Typography variant="body1" style={{ color: '#1b4965', marginTop: '16px' }}>
                         No stops available.
                       </Typography>
                     )}
+
+                    <Box sx={{ display: 'flex', flexDirection: 'column', marginLeft: '8px', color: '#1b4965' }}>
+                      <span>{stops.headsign}</span>
+                      <span>{stops.transitLine?.name}</span>
                     </Box>
                     <Button
                       variant="contained"
-                      sx={{ marginTop: 2, textTransform: 'none', backgroundColor: '#bee9e8', color: '#1b4965' }}
+                      sx={{ marginLeft: 2, textTransform: 'none', backgroundColor: '#bee9e8', color: '#1b4965' }}
                       onClick={handleAnnotate}
                     >
                       Edit Annotation
