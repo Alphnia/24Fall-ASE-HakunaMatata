@@ -6,16 +6,60 @@ import TextField from '@mui/material/TextField';
 
 const Annotations = () => {
   const location = useLocation();
-  const [annotations, setAnnotations] = useState("turn left");
-  const {trainData, stopDatajson} = location.state || {};
-  console.log(stopDatajson);
-  const handleChange = (e) => {
-    setAnnotations(e.target.value);
-    console.log(e.target.value);
-  }
+  const { trainData, stopDatajson, annoList, routeId} = location.state || {};
+  const [annotations, setAnnotations] = useState(() => {
+      if (annoList.length === 0) {
+          return trainData.map((data) => {
+              return Object.keys(data).reduce((acc, key) => {
+                  acc[key] = typeof data[key] === 'object' && !Array.isArray(data[key]) ? {} : ""; // Handle nested objects
+                  return acc;
+              }, {});
+          });
+      }
+      return annoList;
+  });
 
-  const handleSaveAnno = () => {
-   
+  const handleChange = (e, trainIndex, key) => {
+    setAnnotations((prevAnnotations) => {
+      const updatedAnnotations = [...prevAnnotations];
+      updatedAnnotations[trainIndex] = {
+        ...updatedAnnotations[trainIndex],
+        [key]: e.target.value
+      };
+      return updatedAnnotations;
+    });
+  
+    console.log(`Updated value: ${e.target.value}, TrainIndex: ${trainIndex}, Key: ${key}`);
+  };
+
+  const handleSaveAnno = async () => {
+    try {
+      const url = "http://localhost:8080/editRoute";
+
+      // Make the PATCH request
+      const response = await fetch(url, {
+          method: "PATCH",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+              routeId,
+              userId,
+              annotations,
+          }),
+      });
+
+      // Handle the response
+      if (response.ok) {
+          const result = await response.json();
+          console.log("Annotation saved successfully:", result);
+      } else {
+          const errorText = await response.text();
+          console.error("Failed to save annotation:", errorText);
+      }
+  } catch (error) {
+      console.error("Error while saving annotation:", error);
+  }
   }
 
   return (
@@ -46,8 +90,8 @@ const Annotations = () => {
                                 placeholder="Placeholder"
                                 multiline
                                 variant="standard"
-                                value={annotations}
-                                onChange={handleChange}
+                                value={annotations[trainIndex][key]}
+                                onChange={(e) => handleChange(e, trainIndex, key)}
                                 />
                             </Step>
                           )

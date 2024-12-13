@@ -70,6 +70,8 @@ const RouteDisplay = () => {
   const [message, setmessage] = useState(null);
   const [trainData, settrainData] = useState(null);
   const [error, setError] = useState(null);
+  const [annoList, setAnnoList] = useState(null);
+  const [routeId, setRouteId] = useState(null);
   const navigate = useNavigate();
 
   const [stopDatajson, setTextDatajson] = useState('');
@@ -82,18 +84,21 @@ const RouteDisplay = () => {
         throw new Error('Network response was not ok');
       }
       const textData = await response.text();
-      console.log(textData);
       let data;
+      let data3;
+      let annoList;
       try {
-        data = JSON.parse(textData);
-        console.log(data["legs"][0]["steps"]);
+        data = JSON.parse(textData)["Stoplist"];
+        setAnnoList(JSON.parse(textData)["Annotatedlist"]);
+        setRouteId(JSON.parse(textData)["RouteID"]);
+        data3 = JSON.parse(data[0])["legs"];
         setTextDatajson(data);
       } catch (error) {
         data = textData;
       }
       if (typeof data === 'object') {
         let train = [];
-        let data2 = data["legs"][0]["steps"];
+        let data2 = data3[0]["steps"];
         // console.log(data2[0].transitDetails);
         for (let i = 0; i < data2.length; i++) {
           console.log(data2[i].transitDetails);
@@ -115,7 +120,7 @@ const RouteDisplay = () => {
   };
 
   const handleAnnotate = () => {
-    const stopInfo = {trainData: trainData, stopDatajson: stopDatajson};
+    const stopInfo = {trainData: trainData, stopDatajson: stopDatajson, annoList: annoList, routeId: routeId};
     navigate('/Annotations', {state: stopInfo});
   }
 // function RouteDisplay(props) {
@@ -177,8 +182,9 @@ const RouteDisplay = () => {
                     <Typography variant="h6" style={{ fontSize: '1.5em', color: '#1b4965' }}>
                       Train {trainIndex + 1} Stop Details:
                     </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 4 }}> 
                     {stops && Object.keys(stops).length > 0 ? (
-                      <Stepper activeStep={0} alternativeLabel>
+                      <Stepper activeStep={0} orientation="vertical">
                         {['arrivalStop', 'departureStop'].reverse().map((key, index) => (
                           stops[key] && (
                             <Step key={index} sx={{ '& .MuiStepLabel-root': { color: '#bee9e8' } }}>
@@ -197,6 +203,7 @@ const RouteDisplay = () => {
                         No stops available.
                       </Typography>
                     )}
+                    </Box>
                     <Button
                       variant="contained"
                       sx={{ marginTop: 2, textTransform: 'none', backgroundColor: '#bee9e8', color: '#1b4965' }}
@@ -205,6 +212,7 @@ const RouteDisplay = () => {
                       Edit Annotation
                     </Button>
                   </Box>
+                  
                 ))}
             </div>
           )
