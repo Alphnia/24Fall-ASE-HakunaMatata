@@ -62,12 +62,13 @@ public class ReadJson {
         JsonArray routes = jsonObject.getAsJsonArray("routes");
         ArrayList<String> legList = new ArrayList<>();
 
-        for (int r = 0; r < routes.size(); r++) {
-            JsonArray legs = routes.get(r).getAsJsonObject().get("legs").getAsJsonArray();
-            JsonArray extractedLegs = new JsonArray();
+        // Process only the first route
+        if (routes.size() > 0) {
+            JsonArray legs = routes.get(0).getAsJsonObject().get("legs").getAsJsonArray();
 
-            for (int l = 0; l < legs.size(); l++) {
-                JsonArray steps = legs.get(l).getAsJsonObject().get("steps").getAsJsonArray();
+            // Process only the first leg
+            if (legs.size() > 0) {
+                JsonArray steps = legs.get(0).getAsJsonObject().get("steps").getAsJsonArray();
                 JsonArray extractedSteps = new JsonArray();
 
                 for (int s = 0; s < steps.size(); s++) {
@@ -118,12 +119,13 @@ public class ReadJson {
 
                 JsonObject extractedLeg = new JsonObject();
                 extractedLeg.add("steps", extractedSteps);
-                extractedLegs.add(extractedLeg);
-            }
 
-            JsonObject extractedRoute = new JsonObject();
-            extractedRoute.add("legs", extractedLegs);
-            legList.add(extractedRoute.toString());
+                JsonObject extractedRoute = new JsonObject();
+                extractedRoute.add("legs", new JsonArray());
+                extractedRoute.getAsJsonArray("legs").add(extractedLeg);
+
+                legList.add(extractedRoute.toString());
+            }
         }
 
         stepArray = new String[legList.size()];
@@ -133,7 +135,8 @@ public class ReadJson {
         e.printStackTrace();
         return stepArray;
     }
-  }
+}
+
 
 
 
