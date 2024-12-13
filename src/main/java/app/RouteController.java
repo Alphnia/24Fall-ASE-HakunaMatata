@@ -86,7 +86,7 @@ public class RouteController {
         DatabaseOperation database = new DatabaseOperation(origin, destination);
         Document document = database.findDocumentbyOriDes(origin, destination);
         // System.out.println("Type of first stoplist: " + document.getList("Stoplist", Object.class).get(0).getClass().getName());
-        return new ResponseEntity<>(document.getList("Stoplist", Object.class).get(0), HttpStatus.OK);
+        return new ResponseEntity<>(document.getList("Stoplist", Object.class), HttpStatus.OK);
       } else {
         if (origin != null && origin.matches("^[a-zA-Z0-9 .,-]+$")
             && destination != null && destination.matches("^[a-zA-Z0-9 .,-]+$")) {
