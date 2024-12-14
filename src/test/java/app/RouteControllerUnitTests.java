@@ -97,7 +97,7 @@ public class RouteControllerUnitTests {
   @Test
   public void retrieveRouteNotExistsTest() {
     ResponseEntity<?> response = testRc.retrieveRoute(originNotExists, destinationNotExists);
-    String expectedResult = "Successfully Created!";
+    String expectedResult = "No Record Found. Successfully Created!";
     assertEquals(expectedResult, response.getBody());
   }
 
