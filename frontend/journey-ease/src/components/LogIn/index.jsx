@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import PropTypes from "prop-types";
 
 export default function LogIn(props) {
+    const [open, setOpen] = React.useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -40,9 +41,11 @@ export default function LogIn(props) {
 
             // Save the user ID or token if needed
             console.log("Login successful:", data);
-
+            
+             // 保存用户 ID 到 localStorage
+            localStorage.setItem("userId", data.id);
             // Navigate to a new page or dashboard
-            navigate('/dashboard'); // Adjust as needed
+            handleClose()
         } catch (error) {
             // Handle errors gracefully
             console.error('Login failed:', error.message);
