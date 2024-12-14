@@ -15,11 +15,11 @@ import { useNavigate } from 'react-router-dom';
 import PropTypes from "prop-types";
 
 export default function LogIn(props) {
+    const [open, setOpen] = React.useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [errorLogIn, setErrorLogIn] = useState(false);
-    const [userId, setuserId] = useState('');
     const navigate = useNavigate();
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -27,7 +27,7 @@ export default function LogIn(props) {
 
     const doLogin = async (email, password) => {
         try {
-            const response = await fetch("http://localhost:8080" + '/login', {
+            const response = await fetch("http://localhost:8080" + "/login", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -36,30 +36,23 @@ export default function LogIn(props) {
             if (!response.ok) {
                 throw new Error('Invalid email or password');
             }
-            const userId = await response.text();
-            console.log(userId)
-            setuserId(userId);
-            // const data = await response.json();
-            // const token = data.access_token;
 
-            // // Save the JWT token securely
-            // localStorage.setItem('authToken', token);
+            const data = await response.json();
 
-            // Optionally, redirect the user to the desired page
-            navigate('/dashboard'); // Adjust the path as needed
-
-            // Reset form state
-            setEmail('');
-            setPassword('');
-            setErrorLogIn(false);
-
-            // Close the dialog
-            props.handleClose();
+            // Save the user ID or token if needed
+            console.log("Login successful:", data);
+            
+             // 保存用户 ID 到 localStorage
+            localStorage.setItem("userId", data.id);
+            // Navigate to a new page or dashboard
+            handleClose()
         } catch (error) {
-            setErrorLogIn(true);
+            // Handle errors gracefully
             console.error('Login failed:', error.message);
+            setErrorLogIn(true);
         }
     };
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
