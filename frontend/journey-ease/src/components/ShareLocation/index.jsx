@@ -2,12 +2,46 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import StopCircleIcon from '@mui/icons-material/StopCircle';
-// import { startShareLocation, stopShareLocation } from "./watchPosition";
+
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 const ShareLocaion = () => {
   const [tracking, setTracking] = useState(false);
   const [response, setResponse] = useState(null);
   // const [intervalId, setIntervalId]
+  const [open, setOpen] = React.useState(false);
+  const [shareLink, setShareLink] = useState('');
+
+  const handleClickOpen = () => {
+    setOpen(true);
+    console.log("hi")
+    // Generate the share link (replace with your logic)
+    const generatedLink = 'http://localhost:5173/TrackFriend/670c4dab7013573300601f64'; // Replace with actual link logic
+    setShareLink(generatedLink);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(shareLink).then(
+      () => {
+        console.log('Share link copied to clipboard!');
+      },
+      (err) => {
+        console.error('Failed to copy link: ', err);
+      }
+    );
+  };
+
   let watchId;
   let intervalId;
 
@@ -94,8 +128,10 @@ const ShareLocaion = () => {
   }
   
   const startTracking = () => {
+    console.log("hi");
     startShareLocation();
     setTracking(true);
+    handleClickOpen();
   }
 
   const stopTracking = () => {
@@ -112,6 +148,31 @@ const ShareLocaion = () => {
       <Button variant="contained" endIcon={<StopCircleIcon />} onClick={stopTracking}>
         Stop Share Location
       </Button>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Copy this link and share with your friends:</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Share Link"
+            value={shareLink}
+            fullWidth
+            InputProps={{
+              readOnly: true,
+            }}
+            variant="outlined"
+            margin="dense"
+          />
+          <Tooltip title="Copy to Clipboard">
+            <IconButton onClick={handleCopy} sx={{ marginTop: 1 }}>
+              <ContentCopyIcon />
+            </IconButton>
+          </Tooltip>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} variant="contained" color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

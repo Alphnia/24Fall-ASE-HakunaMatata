@@ -1,5 +1,6 @@
 import React from 'react';
 import { Typography, Box } from '@mui/material';
+import ShareLocaion from './components/ShareLocation';
 
 const Home = () => {
   return (
@@ -16,7 +17,9 @@ const Home = () => {
       <Typography variant="h6" component="h2" align="center" sx={{ marginTop: 2 }}>
         Route-Annotation Program
       </Typography>
+      <ShareLocaion />
     </Box>
+    
   );
 };
 
