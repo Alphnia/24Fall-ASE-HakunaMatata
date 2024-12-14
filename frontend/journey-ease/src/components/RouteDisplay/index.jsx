@@ -20,34 +20,6 @@ const FormGrid = styled(Grid)(() => ({
   flexDirection: 'column',
 }));
 
-// const extractStops = (obj) => {
-//   const stopsDict = {};
-
-//   for (const key in obj) {
-//     console.log(key);
-//     if (typeof obj[key] === 'object' && obj[key] !== null) {
-//       const nestedStops = extractStops(obj[key]);
-//       Object.assign(stopsDict, nestedStops);
-//     }
-
-//     // if (key.toLowerCase().includes('stop') && obj[key].name) {
-//     //   stopsDict[key] = obj[key].name;
-//     // }
-//     if (key.toLowerCase().includes('arrivalStop') && obj[key].name) {
-//       stopsDict[key] = obj[key].name;
-//     }
-
-//     if (key === 'headsign' && obj[key]) {
-//       stopsDict[key] = obj[key];
-//     }
-
-//     if (key === 'transitLine' && obj[key].name) {
-//       stopsDict['transitLineName'] = obj[key].name;
-//     }
-//   }
-
-//   return stopsDict;
-// };
 function extractStops(transitDetails) {
   if (!transitDetails || !transitDetails.stopDetails || !transitDetails.transitLine) {
       throw new Error("Invalid transit details object");
@@ -126,6 +98,7 @@ const RouteDisplay = () => {
 // function RouteDisplay(props) {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', width: '100%' }}>
+      
       <h1>Search a route:</h1>
       <Grid container spacing={3}>
         <FormGrid size={{ xs: 6 }}>
@@ -178,7 +151,7 @@ const RouteDisplay = () => {
         trainData && (
             <div>
               {trainData.map((stops, trainIndex) => (
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px' }} key={trainIndex} >
                     <Typography variant="h6" style={{ fontSize: '1.5em', color: '#1b4965' }}>
                       Train {trainIndex + 1} Stop Details:
                     </Typography>
@@ -204,7 +177,7 @@ const RouteDisplay = () => {
                         No stops available.
                       </Typography>
                     )}
-
+                    
                     <Box sx={{ display: 'flex', flexDirection: 'column', marginLeft: '8px', color: '#1b4965' }}>
                       <span>{stops.headsign}</span>
                       <span>{stops.transitLine?.name}</span>
@@ -217,8 +190,8 @@ const RouteDisplay = () => {
                       Edit Annotation
                     </Button>
                   </Box>
-                  
-                ))}
+                </Box>
+              ))}
             </div>
           )
       )}

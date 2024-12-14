@@ -22,7 +22,7 @@ function App() {
               <Route path="/LogIn" element={<LogIn />} />
               <Route path="/SignUp" element={<SignUp />} />
               <Route path="/RouteDisplay" element={<RouteDisplay />} />
-              <Route path="/TrackFriend" element={<TrackFriend />} />
+              <Route path="/TrackFriend/:userId" element={<TrackFriend />} />
               <Route path="/Annotations" element={<Annotations />} />
           </Routes>
       </Router>
