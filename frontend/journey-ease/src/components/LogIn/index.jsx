@@ -19,6 +19,7 @@ export default function LogIn(props) {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [errorLogIn, setErrorLogIn] = useState(false);
+    const [userId, setuserId] = useState('');
     const navigate = useNavigate();
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -35,7 +36,9 @@ export default function LogIn(props) {
             if (!response.ok) {
                 throw new Error('Invalid email or password');
             }
-
+            const userId = await response.text();
+            console.log(userId)
+            setuserId(userId);
             // const data = await response.json();
             // const token = data.access_token;
 

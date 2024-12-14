@@ -6,6 +6,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.DeleteResult;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import org.bson.Document;
+import org.bson.types.ObjectId;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 /**
  * LoginController handles user authentication operations such as login and registration.
@@ -23,18 +43,37 @@ public class LoginController {
      * @return If authentication is successful, returns 200 status; otherwise, returns 400 or 401 status.
      */
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
 
         Optional<User> userOpt = userRepository.findByEmail(email);
+        
         if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            if (user.getPassword().equals(password)) { // Simplified: directly compare plaintext passwords
-                return new ResponseEntity<>("Login successful", HttpStatus.OK);
+            String connectionString = 
+                "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
+                + "?retryWrites=true&w=majority&appName=Cluster4156&tsl=true";
+            MongoClient mongoClient = MongoClients.create(connectionString);
+            MongoDatabase database = mongoClient.getDatabase("Hkunamatata_DB");
+            MongoCollection<Document> collection = database.getCollection("users");
+            Document query = new Document("email", email);
+            FindIterable<Document> results = collection.find(query).limit(1);
+            MongoCursor<Document> cursor = results.iterator();
+            ObjectId userid;
+            if (cursor.hasNext()) {
+                Document document = cursor.next();
+                userid = document.getObjectId("_id");
+                String userId = userid.toHexString();
+                User user = userOpt.get();
+                if (user.getPassword().equals(password)) { // Simplified: directly compare plaintext passwords
+                    return new ResponseEntity<>( userId, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Invalid email or password", HttpStatus.UNAUTHORIZED);
+                }
             } else {
                 return new ResponseEntity<>("Invalid email or password", HttpStatus.UNAUTHORIZED);
             }
+            
         } else {
             return new ResponseEntity<>("Invalid email or password", HttpStatus.UNAUTHORIZED);
         }
