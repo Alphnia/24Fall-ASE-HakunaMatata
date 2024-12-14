@@ -32,21 +32,19 @@ const Annotations = () => {
   
     console.log(`Updated value: ${e.target.value}, TrainIndex: ${trainIndex}, Key: ${key}`);
   };
-
+  console.log(routeId)
   const handleSaveAnno = async () => {
     try {
-      const url = "http://localhost:8080/editRoute";
-
+      let userId = "670c4dab7013573300601f64";
+     
       // Make the PATCH request
-      const response = await fetch(url, {
+      const response = await fetch(`http://localhost:8080/editRoute?routeId=${routeId}&userId=${userId}`, {
           method: "PATCH",
           headers: {
               "Content-Type": "application/json",
           },
           body: JSON.stringify({
-              routeId,
-              userId,
-              annotations,
+          "stopList": annotations,
           }),
       });
 
