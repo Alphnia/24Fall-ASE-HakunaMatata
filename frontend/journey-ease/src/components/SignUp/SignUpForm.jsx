@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Box } from '@mui/material';
-// import globalVal from '../../globalVal';
 import { useNavigate } from 'react-router-dom';
 
 function SignUpForm() {
@@ -8,9 +7,9 @@ function SignUpForm() {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        password: ''
+        password: '',
     });
-    
+
     const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
@@ -22,9 +21,11 @@ function SignUpForm() {
         const newErrors = {};
         if (!formData.name) newErrors.name = 'Name is required';
         if (!formData.email) newErrors.email = 'Email is required';
-        else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is not valid';
+        else if (!/\S+@\S+\.\S+/.test(formData.email))
+            newErrors.email = 'Email is not valid';
         if (!formData.password) newErrors.password = 'Password is required';
-        else if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters long';
+        else if (formData.password.length < 6)
+            newErrors.password = 'Password must be at least 6 characters long';
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -32,48 +33,60 @@ function SignUpForm() {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (validateForm()) {
-          console.log('Form Submitted', formData);
-          const formDataJson = JSON.stringify(formData);
-          fetch("http://localhost:8080/register", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json", 
-            },
-            body: formDataJson
-          })
-            .then((res) => {
-              if (!res.ok) {
-                throw new Error(`HTTP error! Status: ${res.status}`);
-              }
-              return res.json();
-              // console.log(res.json());
+            console.log('Form Submitted', formData);
+            const formDataJson = JSON.stringify(formData);
+
+            fetch("http://localhost:8080"+"/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: formDataJson,
             })
-            .then((data)=>{
-              console.log(data);
-              navigate("/LogIn");
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-            })
+                .then((res) => {
+                    if (!res.ok) {
+                        return res.json().then((error) => {
+                            throw new Error(
+                                error.message || `HTTP error! Status: ${res.status}`
+                            );
+                        });
+                    }
+                    return res.json();
+                })
+                .then((data) => {
+                    console.log("Registration successful:", data);
+
+                    // 保存用户 ID 到 localStorage
+                    localStorage.setItem("userId", data.id);
+
+                    // 跳转到登录页面
+                    navigate("/LogIn");
+                })
+                .catch((error) => {
+                    console.error("Error:", error.message);
+                    setErrors({ server: error.message });
+                });
         }
     };
 
     return (
-        <Box 
-            component="form" 
-            onSubmit={handleSubmit} 
+        <Box
+            component="form"
+            onSubmit={handleSubmit}
             sx={{
-                display: 'flex', 
-                flexDirection: 'column', 
-                alignItems: 'center', 
-                maxWidth: 400, 
-                margin: 'auto', 
-                p: 3, 
-                border: '1px solid #ddd', 
-                borderRadius: 2 
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                maxWidth: 400,
+                margin: 'auto',
+                p: 3,
+                border: '1px solid #ddd',
+                borderRadius: 2,
             }}
         >
-            <Typography variant="h4" gutterBottom>Sign Up</Typography>
+            <Typography variant="h4" gutterBottom>
+                Sign Up
+            </Typography>
 
             <TextField
                 label="Name"
@@ -112,6 +125,12 @@ function SignUpForm() {
                 fullWidth
                 required
             />
+
+            {errors.server && (
+                <Typography color="error" variant="body2">
+                    {errors.server}
+                </Typography>
+            )}
 
             <Button
                 type="submit"

@@ -26,7 +26,7 @@ export default function LogIn(props) {
 
     const doLogin = async (email, password) => {
         try {
-            const response = await fetch("http://localhost:8080/login", {
+            const response = await fetch("http://localhost:8080" + "/login", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -36,27 +36,20 @@ export default function LogIn(props) {
                 throw new Error('Invalid email or password');
             }
 
-            // const data = await response.json();
-            // const token = data.access_token;
+            const data = await response.json();
 
-            // // Save the JWT token securely
-            // localStorage.setItem('authToken', token);
+            // Save the user ID or token if needed
+            console.log("Login successful:", data);
 
-            // Optionally, redirect the user to the desired page
-            navigate('/dashboard'); // Adjust the path as needed
-
-            // Reset form state
-            setEmail('');
-            setPassword('');
-            setErrorLogIn(false);
-
-            // Close the dialog
-            props.handleClose();
+            // Navigate to a new page or dashboard
+            navigate('/dashboard'); // Adjust as needed
         } catch (error) {
-            setErrorLogIn(true);
+            // Handle errors gracefully
             console.error('Login failed:', error.message);
+            setErrorLogIn(true);
         }
     };
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
