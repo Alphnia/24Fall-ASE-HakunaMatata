@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Stepper, Step, StepLabel, Typography, Box, nativeSelectClasses } from '@mui/material';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-const userId = localStorage.getItem('userid');
+const userId = localStorage.getItem('userId');
 
 const Annotations = () => {
   const location = useLocation();

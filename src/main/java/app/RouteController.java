@@ -269,7 +269,89 @@ public class RouteController {
       return handleException(e);
     }
   }
+  
+/**
+   * Inserts a new photo annotation document into the MongoDB collection.
+   *
+   * @param photoAnnotation A {@code PhotoAnnotation} object containing the
+   *                        photo annotation data.
+   * @return A {@code ResponseEntity} with a success message if the insertion
+   *         is successful, or a BAD_REQUEST status if an error occurs.
+   */
+  @PostMapping("/insertPhotoAnno")
+  public ResponseEntity<String> insertPhotoAnno(@RequestBody PhotoAnnotation photoAnnotation) {
 
+    if (photoAnnotation.getRouteId() == null || !photoAnnotation.getRouteId().matches("^[a-fA-F0-9]+$") ||
+        photoAnnotation.getUserId() == null || !photoAnnotation.getUserId().matches("^[a-fA-F0-9]+$") ||
+        photoAnnotation.getUrl() == null || photoAnnotation.getUrl().trim().isEmpty() ||
+        photoAnnotation.getAddress() == null || !photoAnnotation.getAddress().matches("^[a-zA-Z0-9 .,-]+$")) {
+      return new ResponseEntity<>("Invalid Inputs!", HttpStatus.BAD_REQUEST);
+    }
+
+    String connectionString = 
+        "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster4156&tsl=true";
+    try (MongoClient mongoClient = MongoClients.create(connectionString)) {
+     
+      MongoDatabase database = mongoClient.getDatabase("Hkunamatata_DB"); 
+      MongoCollection<Document> collection = database.getCollection("Photo_annotation");
+      
+      Document newDocument = new Document("RouteID", photoAnnotation.getRouteId())
+                            .append("Url", photoAnnotation.getUrl())
+                            .append("UserID", photoAnnotation.getUserId())
+                            .append("Address", photoAnnotation.getAddress());
+      try {
+        collection.insertOne(newDocument);
+        return new ResponseEntity<>("Successfully Created!", HttpStatus.OK);
+      } catch (Exception e) {
+        return new ResponseEntity<>("Failed to insert annotation.", HttpStatus.BAD_REQUEST);
+      }
+    } catch (Exception e) {
+      return new ResponseEntity<>("Failed to connect to database.", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  /**
+   * DTO class for Photo Annotation data.
+   */
+  public static class PhotoAnnotation {
+    private String routeId;
+    private String url;
+    private String userId;
+    private String address;
+
+    // Getters and Setters
+
+    public String getRouteId() {
+      return routeId;
+    }
+
+    public void setRouteId(String routeId) {
+      this.routeId = routeId;
+    }
+
+    public String getUrl() {
+      return url;
+    }
+
+    public void setUrl(String url) {
+      this.url = url;
+    }
+
+    public String getUserId() {
+      return userId;
+    }
+
+    public void setUserId(String userId) {
+      this.userId = userId;
+    }
+
+    public String getAddress() {
+      return address;
+    }
+
+    public void setAddress(String address) {
+      this.address = address;
+    }
+  }
   /**
    * Checks if a route and corresponding annotation exist based on the provided routeId and userId.
    *
