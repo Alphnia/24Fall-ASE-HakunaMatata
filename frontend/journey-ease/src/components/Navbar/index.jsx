@@ -34,7 +34,7 @@ const Navbar = () => {
                 <a href="/TrackFriend" className="nav-link">
                     Track Friends
                 </a>
-                <a href="/Annotations" className="nav-link">
+                <a href="/FavoriteAnnotations" className="nav-link">
                     Favorite Annotations
                 </a>
             </div>

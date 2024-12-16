@@ -12,6 +12,7 @@ import TrackFriend from "./components/TrackFriend";
 import Annotations from "./components/Annotations";
 import LogIn from "./components/LogIn";
 import SignUp from "./components/SignUp";
+import FavoriteAnnotations from './components/Annotations/FavoriteAnno';
 
 function App() {
   return (
@@ -24,6 +25,8 @@ function App() {
               <Route path="/RouteDisplay" element={<RouteDisplay />} />
               <Route path="/TrackFriend/:userId" element={<TrackFriend />} />
               <Route path="/Annotations" element={<Annotations />} />
+              <Route path="/FavoriteAnnotations" element={<FavoriteAnnotations />} />
+              
           </Routes>
       </Router>
   );

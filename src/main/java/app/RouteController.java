@@ -1,12 +1,17 @@
 package app;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+
 import java.util.List;
 import java.util.Map;
+
 import org.bson.Document;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -223,7 +228,6 @@ public class RouteController {
     }
   }
 
-
   /**
    * Query a photo annotation document into the MongoDB collection for testing.
    *
@@ -270,6 +274,7 @@ public class RouteController {
     }
   }
   
+
 /**
    * Inserts a new photo annotation document into the MongoDB collection.
    *
@@ -446,7 +451,43 @@ public class RouteController {
       return handleException(e);
     }
   }
-
+ @GetMapping("/queryAnnoByUser")
+  public ResponseEntity<?> queryAnnotation(
+      @RequestParam("userId") String userId) {
+    try {
+      // 1. Validate inputs: Ensure  and userId are not null, empty, or invalid characters
+      if (userId == null || !userId.matches("^[a-fA-F0-9]+$")) {
+        return new ResponseEntity<>(
+            "Invalid input: routeId and userId must"
+                  + " contain only alphanumeric characters, underscores, or hyphens.",
+                  HttpStatus.BAD_REQUEST);
+      }
+      String connectionString = 
+            "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net"
+            + "/?retryWrites=true&w=majority&appName=Cluster4156&tsl=true";
+      MongoClient mongoClient = MongoClients.create(connectionString);
+      MongoDatabase database = mongoClient.getDatabase("Hkunamatata_DB"); 
+      MongoCollection<Document> collection = database.getCollection("Annotation");
+      Document query = new Document("UserID", userId);
+      FindIterable<Document> results = collection.find(query);
+      if(results!=null){
+        // Prepare list of annotations
+        List<Map<String, Object>> annotations = new ArrayList<>();
+        for (Document doc : results) {
+            Map<String, Object> annotation = new HashMap<>();
+            annotation.put("routeId", doc.getString("RouteID"));
+            annotation.put("stopList", doc.getList("Stoplist", Document.class)); // Stoplist is an array of objects
+            annotations.add(annotation);
+        }
+        // Return the list as a ResponseEntity
+        return ResponseEntity.ok(annotations);
+      }
+      else return new ResponseEntity<>("?", HttpStatus.NOT_FOUND);
+   
+    } catch (Exception e) {
+      return handleException(e);
+    }
+  }
 
   /**
    * Deletes an annotation document based on the provided routeId and userId.
@@ -496,6 +537,6 @@ public class RouteController {
    */
   private ResponseEntity<?> handleException(Exception e) {
     System.out.println(e.toString());
-    return new ResponseEntity<>("An Error has occurred", HttpStatus.NOT_FOUND);
+    return new ResponseEntity<>("An Error has occurred, ", HttpStatus.NOT_FOUND);
   }
 }
