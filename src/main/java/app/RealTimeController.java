@@ -24,6 +24,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 @RestController
 @RequestMapping("/RealTime")
 public class RealTimeController {
+
   /**
    * Update location returned from the client side.
    *

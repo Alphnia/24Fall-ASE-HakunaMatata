@@ -36,6 +36,7 @@ const Annotations = () => {
   
     console.log(`Updated value: ${e.target.value}, TrainIndex: ${trainIndex}, Key: ${key}`);
   };
+
   const handleSaveAnno = async () => {
     try {
       // Make the PATCH request

@@ -47,7 +47,7 @@ const RouteDisplay = () => {
   const navigate = useNavigate();
 
   const [stopDatajson, setTextDatajson] = useState('');
-
+  console.log(trainData);
   const handleSearch = async () => {
     try {
       setmessage(null)

@@ -106,8 +106,8 @@ const ShareLocaion = () => {
   
   const startShareLocation = () => {
     if (navigator.geolocation && intervalId !== null) {
-      watchId = navigator.geolocation.watchPosition(success, error, options);
-      // intervalId = setInterval(fetchPosition, 5000);
+      // watchId = navigator.geolocation.watchPosition(success, error, options);
+      intervalId = setInterval(fetchPosition, 5000);
       console.log("Started watching position, intervalId = " + intervalId);
     } else {
       console.error("Geolocation is not supported by your browser.");
@@ -128,7 +128,6 @@ const ShareLocaion = () => {
   }
   
   const startTracking = () => {
-    console.log("hi");
     startShareLocation();
     setTracking(true);
     handleClickOpen();
