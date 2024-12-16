@@ -3,15 +3,25 @@
 
 This is the GitHub repository for the team project of COMS 4156 Advanced Software Engineering.
 
+## Client Program
+We developed an app called JourneyEase that uses our service.
+Please switch to client-frontend branch to run the client program:
+```
+$ git switch client-frontend
+$ pwd
+.../24Fall-ASE-HakunaMatata/frontend/journey-ease
+$ npm install
+$ npm run dev
+```
+Then open the link http://localhost:5173/ 
+
 ## Building and Running a Local Instance
 Please install the followings:
 1. Maven 3.9.5: https://maven.apache.org/download.cgi Download and follow the installation instructions.
 2. JDK 17: This project used JDK 17 for development: https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
 3. To build the project
 ```
-$ pwd
-COMS 4156 Advanced SE/Projects/4156-Miniproject-2024-Students-Java/IndividualProject
-$ mvn -B package --file IndividualProject/pom.xml
+$ mvn -B package --file 24Fall-ASE-HakunaMatata/pom.xml
 ```
 4. Initialize the database: Do this before the first time you run the instance, or anytime you need to reset the database. Leave it running until you see “System Setup” in the terminal then terminate the program. This initializes the database and if you run into any trouble with the database this is the process you’ll need to perform.
 ```
