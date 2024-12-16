@@ -2,7 +2,6 @@ package app;
 
 import java.util.List;
 import java.util.Map;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * This class is annotation for routes.

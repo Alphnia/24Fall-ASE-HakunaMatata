@@ -2,7 +2,6 @@ package app;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +29,7 @@ public class RealTimeControllerUnitTests {
   public void updateLocationTest() {
     Double latitude = 40.762569;
     Double longitude = -73.975731;
-    String annoId = "19";
+    String annoId = "32";
     Location location = new Location();
     location.setLatitude(latitude);
     location.setLongitude(longitude);

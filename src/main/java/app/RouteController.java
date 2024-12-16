@@ -94,7 +94,7 @@ public class RouteController {
           // just for test phase
           // FileReader reader = new FileReader("src/main/resources/googleResponse.json");
           // JsonObject jsonRead = JsonParser.parseReader(reader).getAsJsonObject();
-          // ReadJson jsonResponse = new ReadJson(jsonRead.toString());
+          // ReadJSON jsonResponse = new ReadJSON(jsonRead.toString());
           ResponseEntity<String> googleResponse = computeRoutes(entity);
           if (googleResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
             return new ResponseEntity<>("Address not found.", HttpStatus.NOT_FOUND);
@@ -340,7 +340,7 @@ public class RouteController {
       }
 
       // 2. Check if the annotation exists
-      boolean doesExist = (checkAnnos(routeId, userId).getStatusCode() == HttpStatus.OK);
+      boolean doesExist = checkAnnos(routeId, userId).getStatusCode() == HttpStatus.OK;
 
       // 3. Initialize DatabaseOperation
       DatabaseOperation db = new DatabaseOperation(true, routeId, userId);
