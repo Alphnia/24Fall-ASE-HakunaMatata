@@ -46,6 +46,9 @@ const RouteDisplay = () => {
   const [routeId, setRouteId] = useState(null);
   const navigate = useNavigate();
 
+  const [selectedFile, setSelectedFile] = useState(null); 
+  const [uploadMessage, setUploadMessage] = useState("");
+
   const [stopDatajson, setTextDatajson] = useState('');
 
   const handleSearch = async () => {
@@ -90,6 +93,55 @@ const RouteDisplay = () => {
       // setstopData(null); // Clear previous route data
     }
   };
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]); // save user selected image
+  };
+  
+  const handleFileUpload = async () => {
+    if (!selectedFile) {
+      alert("Please select a file to upload.");
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append("image", selectedFile);
+  
+    try {
+      const response = await fetch("https://api.imgur.com/3/image", {
+        method: "POST",
+        headers: {
+          Authorization: "Client-ID 0ed9f6cc67b56a5",
+        },
+        body: formData,
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        const fileUrl = data.data.link; // image URL
+  
+        // send image url to backend endpoint
+        await fetch("http://localhost:8080/insertPhotoAnno", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            routeId, // get RouteID from state
+            url: fileUrl,
+            userId: "sample-user-id",
+            address: "sample-address",
+          }),
+        });
+  
+        setUploadMessage("File uploaded and annotation saved successfully!");
+      } else {
+        throw new Error(data.data.error || "Failed to upload image.");
+      }
+    } catch (error) {
+      setUploadMessage(error.message);
+    }
+  };
+  
 
   const handleAnnotate = () => {
     const stopInfo = {trainData: trainData, stopDatajson: stopDatajson, annoList: annoList, routeId: routeId};
@@ -143,6 +195,28 @@ const RouteDisplay = () => {
       >
         Search
       </Button>
+
+      <div style={{ marginTop: "20px" }}>
+        <FormLabel htmlFor="fileUpload">Upload an image:</FormLabel>
+        <OutlinedInput
+          id="fileUpload"
+          type="file"
+          inputProps={{ accept: "image/*" }} 
+          onChange={handleFileChange} 
+        />
+        <Button
+          onClick={handleFileUpload}
+          sx={{ marginTop: "10px", backgroundColor: '#bee9e8', color: '#1b4965' }}
+        >
+          Upload Image
+        </Button>
+        {uploadMessage && (
+          <Typography variant="body1" style={{ color: '#1b4965', marginTop: '16px' }}>
+            {uploadMessage}
+          </Typography>
+        )}
+      </div>
+
       { message ? (
         <Typography variant="body1" style={{ color: '#1b4965', marginTop: '16px' }}>
           {message}
