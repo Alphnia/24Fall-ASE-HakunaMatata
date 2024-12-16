@@ -94,12 +94,12 @@ public class RouteController {
           // just for test phase
           // FileReader reader = new FileReader("src/main/resources/googleResponse.json");
           // JsonObject jsonRead = JsonParser.parseReader(reader).getAsJsonObject();
-          // ReadJson jsonResponse = new ReadJson(jsonRead.toString());
+          // ReadJSON jsonResponse = new ReadJSON(jsonRead.toString());
           ResponseEntity<String> googleResponse = computeRoutes(entity);
           if (googleResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
             return new ResponseEntity<>("Address not found.", HttpStatus.NOT_FOUND);
           }
-          ReadJson jsonResponse = new ReadJson(googleResponse.getBody());
+          ReadJSON jsonResponse = new ReadJSON(googleResponse.getBody());
           String[] stopList = jsonResponse.getContent();
           
           // JsonObject rawJsonToy = new JsonObject();

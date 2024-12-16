@@ -9,13 +9,13 @@ import java.util.Set;
 // import org.hibernate.mapping.Set;
 
 /**
-* ReadJson function.
+* ReadJSON function.
 *
 * 
 */
-public class ReadJson {
+public class ReadJSON {
 
-  public ReadJson(String jsonString) {
+  public ReadJSON(String jsonString) {
     this.jsonString = jsonString;
   }
 

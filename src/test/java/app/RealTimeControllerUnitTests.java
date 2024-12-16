@@ -30,7 +30,7 @@ public class RealTimeControllerUnitTests {
   public void updateLocationTest() {
     Double latitude = 40.762569;
     Double longitude = -73.975731;
-    String annoId = "19";
+    String annoId = "32";
     Location location = new Location();
     location.setLatitude(latitude);
     location.setLongitude(longitude);
