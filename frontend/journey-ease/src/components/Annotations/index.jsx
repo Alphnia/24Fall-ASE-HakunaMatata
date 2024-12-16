@@ -18,7 +18,6 @@ const Annotations = () => {
       }
       return annoList;
   });
-
   const handleChange = (e, trainIndex, key) => {
     setAnnotations((prevAnnotations) => {
       const updatedAnnotations = [...prevAnnotations];
@@ -31,7 +30,7 @@ const Annotations = () => {
   
     console.log(`Updated value: ${e.target.value}, TrainIndex: ${trainIndex}, Key: ${key}`);
   };
-  console.log(routeId)
+  console.log(annotations);
   const handleSaveAnno = async () => {
     try {
       let userId = "670c4dab7013573300601f64";
@@ -42,9 +41,7 @@ const Annotations = () => {
           headers: {
               "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-          "stopList": annotations,
-          }),
+          body: annotations,
       });
 
       // Handle the response
