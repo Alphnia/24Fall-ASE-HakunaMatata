@@ -21,9 +21,7 @@ const ShareLocaion = () => {
 
   const handleClickOpen = () => {
     setOpen(true);
-    console.log("hi")
-    // Generate the share link (replace with your logic)
-    const generatedLink = 'http://localhost:5173/TrackFriend/670c4dab7013573300601f64'; // Replace with actual link logic
+    const generatedLink = 'http://localhost:5173/TrackFriend/67603ec6b8d17c173d3d0243'; // Replace with actual link logic
     setShareLink(generatedLink);
   };
 
@@ -68,7 +66,7 @@ const ShareLocaion = () => {
     const data = { latitude: crd.latitude, longitude: crd.longitude }; 
 
     try {
-      const res = await fetch('http://localhost:8080/RealTime/update_location?annoId=19', {
+      const res = await fetch('http://localhost:8080/RealTime/update_location?annoId=8', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
