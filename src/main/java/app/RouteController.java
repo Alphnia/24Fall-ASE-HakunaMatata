@@ -99,7 +99,7 @@ public class RouteController {
           if (googleResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
             return new ResponseEntity<>("Address not found.", HttpStatus.NOT_FOUND);
           }
-          ReadJSON jsonResponse = new ReadJSON(googleResponse.getBody());
+          ReadJson jsonResponse = new ReadJson(googleResponse.getBody());
           String[] stopList = jsonResponse.getContent();
           
           // JsonObject rawJsonToy = new JsonObject();
@@ -340,7 +340,7 @@ public class RouteController {
       }
 
       // 2. Check if the annotation exists
-      boolean doesExist = (checkAnnos(routeId, userId).getStatusCode() == HttpStatus.OK);
+      boolean doesExist = checkAnnos(routeId, userId).getStatusCode() == HttpStatus.OK;
 
       // 3. Initialize DatabaseOperation
       DatabaseOperation db = new DatabaseOperation(true, routeId, userId);

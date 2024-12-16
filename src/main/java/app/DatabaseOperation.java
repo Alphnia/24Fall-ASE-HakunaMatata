@@ -1,6 +1,8 @@
 package app;
 
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.set;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
@@ -8,8 +10,6 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -29,14 +29,13 @@ import org.springframework.http.ResponseEntity;
 public class DatabaseOperation {
   /**
    * Constructor that initializes a DatabaseOperation instance with a MongoDB connection
-   * and retrieves the "Route" and "Annotation" collections based on route Id and user Id.
+   * and retrieves the "Route" and "Annotation" collections.
    *
-   * @param flag A boolean flag.
-   * 
-   * @param routeId The route Id.
-   * @param userId The user Id.
    */
   public DatabaseOperation(Boolean flag, String routeId, String userId) {
+    final Boolean flag1 = flag;
+    final String routeId1 = routeId;
+    final String userId1 = userId;
     String connectionString = 
         "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
         + "?retryWrites=true&w=majority&appName=Cluster4156&tsl=true";
@@ -44,6 +43,7 @@ public class DatabaseOperation {
     this.database = mongoClient.getDatabase("Hkunamatata_DB");
     this.collection = database.getCollection("Route");
     this.collection2 = database.getCollection("Annotation");
+    System.err.println(flag1 + routeId1 + userId1);
   }
 
 
@@ -53,12 +53,15 @@ public class DatabaseOperation {
   * 
   */
   public DatabaseOperation(String origin, String destination) {
+    String origin1 = origin;
+    String destination1 = destination;
     String connectionString = 
         "mongodb+srv://test_user:coms4156@cluster4156.287dv.mongodb.net/"
         + "?retryWrites=true&w=majority&appName=Cluster4156&tsl=true";
     MongoClient mongoClient = MongoClients.create(connectionString);
     this.database = mongoClient.getDatabase("Hkunamatata_DB");
     this.collection = database.getCollection("Route");
+    System.err.println(origin1 + destination1);
   }
 
   /**
@@ -283,8 +286,8 @@ public class DatabaseOperation {
   public String updateAnno(String routeId, String userId, List<Map<String, Object>> stopList) {
     try {
       collection2.updateOne(
-          Filters.and(Filters.eq("RouteID", routeId), Filters.eq("UserID", userId)),
-          Updates.set("Stoplist", stopList));
+          and(eq("RouteID", routeId), eq("UserID", userId)),
+          set("Stoplist", stopList));
       return "Update success";
     } catch (Exception e) {
       System.out.println("Error: " + e.getMessage());
@@ -337,11 +340,6 @@ public class DatabaseOperation {
       System.out.println("Error: " + e.getMessage());
       return "An Error has occurred";
     }
-  }
-
-  private ResponseEntity<?> handleException(Exception e) {
-    System.out.println(e.toString());
-    return new ResponseEntity<>("An Error has occurred", HttpStatus.OK);
   }
 
 

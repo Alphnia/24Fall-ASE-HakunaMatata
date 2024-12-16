@@ -8,13 +8,13 @@ import java.util.ArrayList;
 // import org.hibernate.mapping.Set;
 
 /**
-* ReadJSON function.
+* ReadJson function.
 *
 * 
 */
-public class ReadJSON {
+public class ReadJson {
 
-  public ReadJSON(String jsonString) {
+  public ReadJson(String jsonString) {
     this.jsonString = jsonString;
   }
 
