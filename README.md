@@ -258,18 +258,6 @@ mvn test jacoco:report
 
 ## Static Code Analysis Using PMD
 I used the QuickStart guide on https://pmd.github.io/
-
-```
-// Where I downloaded the source file
-$ pwd
-  
-$ wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F7.5.0/pmd-dist-7.5.0-bin.zip
-$ unzip pmd-dist-7.5.0-bin.zip
-$ alias pmd="$HOME/pmd-bin-7.5.0/bin/pmd"
-$ pmd check -d  -R rulesets/java/quickstart.xml -f text
-```
-This command also works fine with my project.
-
 ```
 $ mvn pmd:check
 ```
