@@ -254,14 +254,14 @@ Use JaCoCo to run unit tests and analyze branch coverage.
 ```
 mvn test jacoco:report
 ```
+![report screenshot all](./jacoco_report_all.jpeg)
 ![report screenshot](./jacoco-report.png)
 
 ## Static Code Analysis Using PMD
-I used the QuickStart guide on https://pmd.github.io/
 ```
 $ mvn pmd:check
 ```
-![WeChatb6e2c5eba705d2ebdca245cb342de5bd](https://github.com/user-attachments/assets/f89a9bde-cecb-487d-9b4e-930d7aad6073)
+![pmd](./pmd.jpeg)
 
 ## Tools used for development
 The following are tools and technologies used in this project:
