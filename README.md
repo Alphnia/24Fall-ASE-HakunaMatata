@@ -254,7 +254,7 @@ Use JaCoCo to run unit tests and analyze branch coverage.
 ```
 mvn test jacoco:report
 ```
-![report screenshot all](./jacoco_report_all.png)
+![report screenshot all](./jacoco_report_all.jpeg)
 ![report screenshot](./jacoco-report.png)
 
 ## Static Code Analysis Using PMD
