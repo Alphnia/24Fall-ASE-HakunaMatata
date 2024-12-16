@@ -1,10 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Stepper, Step, StepLabel, Typography, Box, nativeSelectClasses } from '@mui/material';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+const userId = localStorage.getItem('userId');
+
 
 const Annotations = () => {
+
+  const navigate = useNavigate();
+
   const location = useLocation();
   const { trainData, stopDatajson, annoList, routeId} = location.state || {};
   const [annotations, setAnnotations] = useState(() => {
@@ -30,28 +36,38 @@ const Annotations = () => {
   
     console.log(`Updated value: ${e.target.value}, TrainIndex: ${trainIndex}, Key: ${key}`);
   };
-  console.log(annotations);
+
   const handleSaveAnno = async () => {
     try {
-      let userId = "670c4dab7013573300601f64";
-     
       // Make the PATCH request
+      const parsedAnnotations = annotations.map(annotation => {
+        return [
+          { departureStop: { dir: annotation.departureStop } },
+          { arrivalStop: { dir: annotation.arrivalStop } }
+        ];
+      }).flat();
       const response = await fetch(`http://localhost:8080/editRoute?routeId=${routeId}&userId=${userId}`, {
           method: "PATCH",
           headers: {
               "Content-Type": "application/json",
           },
-          body: annotations,
+          body: 
+          JSON.stringify(parsedAnnotations),
       });
-
+        console.log(JSON.stringify(
+          parsedAnnotations
+          ));
+        console.log(userId)
+        console.log(routeId)
       // Handle the response
       if (response.ok) {
-          const result = await response.json();
-          console.log("Annotation saved successfully:", result);
+        const message = await response.text();
+          console.log("Annotation saved successfully: ",message);
       } else {
-          const errorText = await response.text();
-          console.error("Failed to save annotation:", errorText);
+        const message = await response.text();
+          console.error("Failed to save annotation!",message);
       }
+      navigate('/RouteDisplay');
   } catch (error) {
       console.error("Error while saving annotation:", error);
   }
